@@ -1,3 +1,5 @@
+'use client'
+
 import TarjetaArte from '@/components/TarjetaArte'
 import AnimarAlEntrar from '@/components/AnimarAlEntrar'
 
@@ -7,32 +9,32 @@ const subcategorias = [
     nombre: 'Historia',
     descripcion: 'Legado prehispánico e influencia española reflejada en la arquitectura y costumbres del municipio.',
     emoji: '📜',
-    color: '#1a4a2e',
-    colorClaro: 'rgba(26,74,46,0.08)',
+    color: '#4A7C59',
+    colorClaro: 'rgba(74,124,89,0.1)',
   },
   {
     id: 'cultura',
     nombre: 'Cultura',
     descripcion: 'Vida rural, prácticas agrícolas y expresiones propias que definen la identidad de Chachagüí.',
     emoji: '🎭',
-    color: '#b04a1a',
-    colorClaro: 'rgba(176,74,26,0.08)',
+    color: '#FAB511',
+    colorClaro: 'rgba(250,181,17,0.1)',
   },
   {
     id: 'artesanias',
     nombre: 'Artesanías',
     descripcion: 'Tejidos en fique y tallado en madera elaborados por artesanos y artesanas de la región.',
     emoji: '🏺',
-    color: '#7a3a8a',
-    colorClaro: 'rgba(122,58,138,0.08)',
+    color: '#4A7C59',
+    colorClaro: 'rgba(74,124,89,0.1)',
   },
   {
     id: 'tradiciones',
     nombre: 'Tradiciones',
     descripcion: 'Rituales y saberes ancestrales transmitidos de generación en generación en el municipio.',
     emoji: '🎨',
-    color: '#1a5a7a',
-    colorClaro: 'rgba(26,90,122,0.08)',
+    color: '#FAB511',
+    colorClaro: 'rgba(250,181,17,0.1)',
   },
 ]
 
@@ -42,8 +44,8 @@ export default function ArteYCultura() {
       id="arte"
       style={{
         padding: '100px 0',
-        background: '#fdf6ec',
-        backgroundImage: 'radial-gradient(circle, rgba(176,74,26,0.055) 1.5px, transparent 1.5px)',
+        background: '#FFF6E6',
+        backgroundImage: 'radial-gradient(circle, rgba(74,124,89,0.07) 1.5px, transparent 1.5px)',
         backgroundSize: '28px 28px',
       }}
     >
@@ -54,7 +56,7 @@ export default function ArteYCultura() {
           <div style={{ textAlign: 'center', marginBottom: '64px' }}>
             <div style={{
               display: 'inline-flex', alignItems: 'center', gap: '8px',
-              background: 'rgba(176,74,26,0.1)', color: '#b04a1a',
+              background: 'rgba(74,124,89,0.1)', color: '#4A7C59',
               fontSize: '10px', fontWeight: 700, letterSpacing: '3px',
               textTransform: 'uppercase', padding: '6px 18px',
               borderRadius: '30px', marginBottom: '20px',
@@ -64,21 +66,22 @@ export default function ArteYCultura() {
             <h2 style={{
               fontFamily: 'var(--font-playfair), Georgia, serif',
               fontSize: 'clamp(32px, 5vw, 56px)',
-              fontWeight: 800, color: '#1a4a2e',
+              fontWeight: 800, color: '#1C2316',
               letterSpacing: '-1.5px', lineHeight: 1.05,
               marginBottom: '20px',
             }}>
-              Arte y <em style={{ fontStyle: 'italic', color: '#b04a1a' }}>Cultura</em>
+              Arte y <em style={{ fontStyle: 'italic', color: '#4A7C59' }}>Cultura</em>
             </h2>
             <div style={{
               width: '60px', height: '4px',
-              background: 'linear-gradient(90deg, #b04a1a, #d4920a)',
+              background: 'linear-gradient(90deg, #4A7C59, #FAB511)',
               borderRadius: '2px', margin: '0 auto 20px',
             }} />
             <p style={{
-              fontSize: '16px', color: '#5a4030',
+              fontSize: '16px', color: '#1C2316',
               fontWeight: 300, lineHeight: 1.8,
               maxWidth: '600px', margin: '0 auto',
+              opacity: 0.7,
             }}>
               Chachagüí es un municipio con raíces profundas en la cultura andina
               del sur de Colombia. Sus tradiciones, artesanías y festividades
@@ -103,29 +106,29 @@ export default function ArteYCultura() {
                 top: '-12px', left: '-12px',
                 width: '100%', height: '100%',
                 borderRadius: '24px',
-                border: '2px solid rgba(176,74,26,0.18)',
+                border: '2px solid rgba(250,181,17,0.3)',
               }} />
               <div style={{
                 position: 'relative', zIndex: 1,
                 width: '100%', height: '100%',
                 minHeight: '480px',
-                background: 'linear-gradient(160deg, #2a5a3a 0%, #1a4a2e 40%, #0d3020 100%)',
+                background: 'linear-gradient(160deg, #4A7C59 0%, #3A6449 40%, #1C2316 100%)',
                 borderRadius: '22px',
                 display: 'flex', alignItems: 'center',
                 justifyContent: 'center',
-                boxShadow: '0 24px 64px rgba(13,48,32,0.35)',
+                boxShadow: '0 24px 64px rgba(28,35,22,0.35)',
                 overflow: 'hidden',
               }}>
                 {/* Círculos decorativos */}
                 <div style={{
                   position: 'absolute', top: '-60px', right: '-60px',
                   width: '240px', height: '240px', borderRadius: '50%',
-                  background: 'rgba(212,146,10,0.1)',
+                  background: 'rgba(250,181,17,0.1)',
                 }} />
                 <div style={{
                   position: 'absolute', bottom: '-40px', left: '-40px',
                   width: '180px', height: '180px', borderRadius: '50%',
-                  background: 'rgba(74,184,96,0.08)',
+                  background: 'rgba(255,246,230,0.06)',
                 }} />
                 <div style={{ position: 'relative', textAlign: 'center', zIndex: 2 }}>
                   <div style={{ fontSize: '80px', marginBottom: '16px' }}>🎨</div>
@@ -141,23 +144,23 @@ export default function ArteYCultura() {
               {/* Badge 300+ */}
               <div style={{
                 position: 'absolute', bottom: '-18px', right: '-18px', zIndex: 2,
-                background: 'linear-gradient(135deg, #c4820a, #f0b020)',
-                color: '#fff', fontWeight: 800,
+                background: 'linear-gradient(135deg, #FAB511, #FFC94A)',
+                color: '#1C2316', fontWeight: 800,
                 padding: '20px 24px', borderRadius: '20px',
-                boxShadow: '0 12px 36px rgba(212,146,10,0.5)',
+                boxShadow: '0 12px 36px rgba(250,181,17,0.45)',
                 textAlign: 'center', lineHeight: 1.15,
               }}>
                 <span style={{ display: 'block', fontSize: '32px', fontWeight: 900, letterSpacing: '-1px' }}>
                   300+
                 </span>
-                <span style={{ fontSize: '11px', fontWeight: 600, opacity: 0.9, letterSpacing: '1px' }}>
+                <span style={{ fontSize: '11px', fontWeight: 600, opacity: 0.8, letterSpacing: '1px' }}>
                   AÑOS DE HISTORIA
                 </span>
               </div>
             </div>
           </AnimarAlEntrar>
 
-          {/* Cards derecha — cada una con delay escalonado */}
+          {/* Cards derecha */}
           <div style={{
             display: 'grid',
             gridTemplateColumns: '1fr 1fr',

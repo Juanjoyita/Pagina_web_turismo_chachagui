@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { cultura } from '@/data/arte'
+import { cultura } from '@/data/historia'
 
 export default function CulturaPage() {
   return (

@@ -87,12 +87,9 @@ function NavItem({ link }: { link: typeof links[0] }) {
     return () => { if (timeoutRef.current) clearTimeout(timeoutRef.current) }
   }, [])
 
-  // Calcular posición left para que no se salga de pantalla
   const menuWidth = 220
-  const left = rect
-    ? Math.min(rect.left, window.innerWidth - menuWidth - 12)
-    : 0
-  const top = rect ? rect.bottom + 6 : 0
+  const left = rect ? Math.min(rect.left, window.innerWidth - menuWidth - 12) : 0
+  const top  = rect ? rect.bottom + 6 : 0
 
   return (
     <>
@@ -105,16 +102,15 @@ function NavItem({ link }: { link: typeof links[0] }) {
         <Link
           href={link.href}
           style={{
-             alignItems: 'center', gap: '6px',
-            color: abierto ? '#f0b020' : 'rgba(255,255,255,0.78)',
-            background: abierto ? 'rgba(212,146,10,0.13)' : 'transparent',
+            display: 'flex', alignItems: 'center', gap: '6px',
+            color: abierto ? '#FAB511' : '#FFFFFF',
+            background: abierto ? 'rgba(250,181,17,0.13)' : 'transparent',
             textDecoration: 'none',
             fontSize: '11.5px', fontWeight: 600,
             padding: '8px 12px', borderRadius: '8px',
             transition: 'color 0.2s, background 0.2s',
             whiteSpace: 'nowrap',
             userSelect: 'none',
-            display: 'flex',
           }}
         >
           <span aria-hidden="true" style={{ fontSize: '14px' }}>{link.emoji}</span>
@@ -122,7 +118,6 @@ function NavItem({ link }: { link: typeof links[0] }) {
         </Link>
       </li>
 
-      {/* Portal — renderiza en el body, completamente fuera del navbar */}
       {mounted && abierto && createPortal(
         <div
           onMouseEnter={mantener}
@@ -136,11 +131,9 @@ function NavItem({ link }: { link: typeof links[0] }) {
           }}
         >
           <ul style={{
-            listStyle: 'none',
-            margin: 0,
-            padding: '8px',
-            background: 'rgba(10,36,22,0.98)',
-            border: '1px solid rgba(74,184,96,0.22)',
+            listStyle: 'none', margin: 0, padding: '8px',
+            background: '#1C2316',
+            border: '1px solid rgba(250,181,17,0.25)',
             borderRadius: '14px',
             boxShadow: '0 16px 48px rgba(0,0,0,0.5)',
           }}>
@@ -154,14 +147,13 @@ function NavItem({ link }: { link: typeof links[0] }) {
                     color: 'rgba(255,255,255,0.75)',
                     textDecoration: 'none',
                     fontSize: '13px', fontWeight: 500,
-                    padding: '10px 12px',
-                    borderRadius: '9px',
+                    padding: '10px 12px', borderRadius: '9px',
                     transition: 'color 0.15s, background 0.15s, padding-left 0.15s',
                   }}
                   onMouseEnter={e => {
                     const el = e.currentTarget as HTMLElement
-                    el.style.color = '#f0b020'
-                    el.style.background = 'rgba(212,146,10,0.1)'
+                    el.style.color = '#FAB511'
+                    el.style.background = 'rgba(250,181,17,0.1)'
                     el.style.paddingLeft = '18px'
                   }}
                   onMouseLeave={e => {
@@ -173,8 +165,8 @@ function NavItem({ link }: { link: typeof links[0] }) {
                 >
                   <span aria-hidden="true" style={{
                     width: '6px', height: '6px', borderRadius: '50%',
-                    background: '#4ab860', flexShrink: 0,
-                    boxShadow: '0 0 6px rgba(74,184,96,0.4)',
+                    background: '#FAB511', flexShrink: 0,
+                    boxShadow: '0 0 6px rgba(250,181,17,0.4)',
                   }} />
                   {sub.label}
                 </Link>
@@ -206,15 +198,14 @@ export default function Navbar() {
       style={{
         position: 'fixed', top: 0, left: 0, right: 0, zIndex: 1000,
         height: '64px',
-        background: 'rgba(13,48,32,0.97)',
+        background: 'rgba(74,124,89,0.97)',
         backdropFilter: 'blur(16px)',
-        borderBottom: '1px solid rgba(74,184,96,0.13)',
+        borderBottom: '1px solid rgba(250,181,17,0.2)',
         display: 'flex', alignItems: 'center',
         justifyContent: 'space-between',
         padding: '0 36px',
       }}
     >
-
       {/* ── LOGO ── */}
       <Link
         href="/"
@@ -225,22 +216,22 @@ export default function Navbar() {
         }}
       >
         <span aria-hidden="true" style={{
-          width: '38px', height: '38px', background: '#d4920a',
+          width: '38px', height: '38px', background: '#FAB511',
           borderRadius: '50%', display: 'flex',
           alignItems: 'center', justifyContent: 'center', fontSize: '18px',
-          boxShadow: '0 4px 14px rgba(212,146,10,0.4)',
+          boxShadow: '0 4px 14px rgba(250,181,17,0.4)',
         }}>
           🌿
         </span>
         <span style={{ display: 'flex', flexDirection: 'column', lineHeight: 1.25 }}>
           <strong style={{
-            color: '#fff', fontSize: '15px',
+            color: '#FFFFFF', fontSize: '15px',
             fontWeight: 700, letterSpacing: '-0.3px',
           }}>
             Chachagüí
           </strong>
           <small style={{
-            color: '#4ab860', fontSize: '8.5px',
+            color: '#FFF6E6', fontSize: '8.5px',
             letterSpacing: '2.5px', textTransform: 'uppercase',
           }}>
             Nariño · Colombia
@@ -276,17 +267,17 @@ export default function Navbar() {
         >
           <span style={{
             display: 'block', width: '24px', height: '2.5px',
-            background: '#fff', borderRadius: '2px', transition: 'all 0.3s',
+            background: '#FFFFFF', borderRadius: '2px', transition: 'all 0.3s',
             transform: menuAbierto ? 'translateY(7.5px) rotate(45deg)' : 'none',
           }} />
           <span style={{
             display: 'block', width: '24px', height: '2.5px',
-            background: '#fff', borderRadius: '2px', transition: 'all 0.3s',
+            background: '#FFFFFF', borderRadius: '2px', transition: 'all 0.3s',
             opacity: menuAbierto ? 0 : 1,
           }} />
           <span style={{
             display: 'block', width: '24px', height: '2.5px',
-            background: '#fff', borderRadius: '2px', transition: 'all 0.3s',
+            background: '#FFFFFF', borderRadius: '2px', transition: 'all 0.3s',
             transform: menuAbierto ? 'translateY(-7.5px) rotate(-45deg)' : 'none',
           }} />
         </button>
@@ -299,8 +290,8 @@ export default function Navbar() {
           aria-label="Menú móvil"
           style={{
             position: 'fixed', top: '64px', left: 0, right: 0, zIndex: 999,
-            background: 'rgba(10,36,22,0.98)',
-            borderBottom: '2px solid rgba(74,184,96,0.3)',
+            background: '#1C2316',
+            borderBottom: '2px solid rgba(250,181,17,0.3)',
             maxHeight: 'calc(100vh - 64px)',
             overflowY: 'auto',
             padding: '8px 0 32px',
@@ -317,7 +308,7 @@ export default function Navbar() {
                   width: '100%', background: 'none', border: 'none',
                   display: 'flex', alignItems: 'center',
                   justifyContent: 'space-between',
-                  color: '#fff', fontSize: '15px', fontWeight: 600,
+                  color: '#FFFFFF', fontSize: '15px', fontWeight: 600,
                   padding: '15px 28px', cursor: 'pointer',
                   borderBottom: '1px solid rgba(255,255,255,0.06)',
                 }}
@@ -359,7 +350,7 @@ export default function Navbar() {
                       >
                         <span aria-hidden="true" style={{
                           width: '5px', height: '5px', borderRadius: '50%',
-                          background: '#4ab860', flexShrink: 0,
+                          background: '#FAB511', flexShrink: 0,
                         }} />
                         {sub.label}
                       </Link>
@@ -371,7 +362,6 @@ export default function Navbar() {
           ))}
         </nav>
       )}
-
     </nav>
   )
 }

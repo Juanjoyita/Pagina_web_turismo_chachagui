@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { artesanias } from '@/data/arte'
+import { artesanias } from '@/data/historia'
 
 export default function ArtesaniasPage() {
   return (

@@ -1,38 +1,23 @@
 @import "tailwindcss";
 
 @theme {
-  /* ── Colores ── */
-  --color-tierra:        #b04a1a;
-  --color-tierra-claro:  #d4601e;
-  --color-mostaza:       #d4920a;
-  --color-mostaza-claro: #f0b020;
-  --color-botella:       #1a4a2e;
-  --color-botella-oscuro:#0d3020;
-  --color-menta:         #2a7a4a;
-  --color-lima:          #4ab860;
-  --color-crema:         #fdf6ec;
-  --color-crema-oscuro:  #f5ede0;
-  --color-arena:         #e8d8c0;
+  --color-verde:         #4A7C59;
+  --color-verde-oscuro:  #1C2316;
+  --color-verde-claro:   #6A9E7A;
+  --color-dorado:        #FAB511;
+  --color-dorado-claro:  #FFC94A;
+  --color-crema:         #FFF6E6;
+  --color-crema-oscuro:  #F5E8CC;
+  --color-blanco:        #FFFFFF;
+  --color-texto:         #1C2316;
+  --color-texto2:        #4A3820;
 
-  /* ── Tipografías ── */
   --font-sans:    var(--font-raleway), system-ui, sans-serif;
   --font-display: var(--font-playfair), Georgia, serif;
 }
 
-html {
-  scroll-behavior: smooth;
-}
+html { scroll-behavior: smooth; }
 
 ::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: #fdf6ec; }
-::-webkit-scrollbar-thumb { background: #2a7a4a; border-radius: 3px; }
-
-/* Oculta scrollbar pero permite scroll */
-* {
-  -ms-overflow-style: none; /* IE y Edge */
-  scrollbar-width: none; /* Firefox */
-}
-
-*::-webkit-scrollbar {
-  display: none; /* Chrome, Safari */
-}
+::-webkit-scrollbar-track { background: #FFF6E6; }
+::-webkit-scrollbar-thumb { background: #4A7C59; border-radius: 3px; }

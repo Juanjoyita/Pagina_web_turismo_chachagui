@@ -50,104 +50,188 @@ export default function Hero() {
     return () => clearInterval(timer)
   }, [])
 
-  const anterior = () =>
-    setActual((prev) => (prev - 1 + slides.length) % slides.length)
-
-  const siguiente = () =>
-    setActual((prev) => (prev + 1) % slides.length)
+  const anterior = () => setActual((prev) => (prev - 1 + slides.length) % slides.length)
+  const siguiente = () => setActual((prev) => (prev + 1) % slides.length)
 
   return (
-    <section className="relative h-screen min-h-[600px] flex items-center overflow-hidden mt-16">
+    <section style={{
+      position: 'relative',
+      height: '100vh', minHeight: '600px',
+      display: 'flex', alignItems: 'center',
+      overflow: 'hidden', marginTop: '64px',
+    }}>
 
       {/* Slides */}
       {slides.map((slide, i) => (
         <div
           key={slide.id}
-          className={`absolute inset-0 bg-cover bg-center transition-opacity duration-[1400ms] ${
-            i === actual ? 'opacity-100 z-10' : 'opacity-0'
-          }`}
-          style={{ backgroundImage: `url(${slide.imagen})` }}
+          style={{
+            position: 'absolute', inset: 0,
+            backgroundImage: `url(${slide.imagen})`,
+            backgroundSize: 'cover', backgroundPosition: 'center',
+            opacity: i === actual ? 1 : 0,
+            transition: 'opacity 1.4s ease',
+            zIndex: i === actual ? 1 : 0,
+          }}
         />
       ))}
 
       {/* Overlay */}
-      <div className="absolute inset-0 z-20 bg-[linear-gradient(to_right,rgba(13,48,32,0.9)_0%,rgba(13,48,32,0.4)_50%,transparent_80%),linear-gradient(to_top,rgba(13,48,32,0.95),rgba(13,48,32,0.3))]" />
+      <div style={{
+        position: 'absolute', inset: 0, zIndex: 2,
+        background: 'linear-gradient(to right, rgba(28,35,22,0.92) 0%, rgba(28,35,22,0.55) 50%, rgba(28,35,22,0.2) 80%), linear-gradient(to top, rgba(28,35,22,0.95), rgba(28,35,22,0.3))',
+      }} />
 
-      {/* Info superior derecha (solo desktop) */}
-      <div className="hidden md:block absolute top-24 right-10 z-30 text-right">
-        <span className="text-[#f0b020] text-xs font-bold tracking-wider">
+      {/* Info superior derecha */}
+      <div style={{
+        display: 'none',
+        position: 'absolute', top: '96px', right: '40px', zIndex: 3,
+        textAlign: 'right',
+      }}
+        className="md:block"
+      >
+        <span style={{ color: '#FAB511', fontSize: '11px', fontWeight: 700, letterSpacing: '2px' }}>
           {slides[actual].categoria}
         </span>
-        <div className="text-white font-bold">
+        <div style={{ color: '#FFFFFF', fontWeight: 700, fontSize: '16px', marginTop: '4px' }}>
           {slides[actual].titulo}
         </div>
-        <div className="text-white/60 text-xs">
+        <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '12px', marginTop: '2px' }}>
           {slides[actual].descripcion}
         </div>
       </div>
 
       {/* Contenido principal */}
-      <div className="relative z-30 px-6 md:px-20 max-w-4xl">
-
-        <div className="inline-block bg-[#d4920a]/20 border border-[#d4920a]/40 text-[#f0b020] text-xs font-bold px-4 py-1 rounded-full mb-5">
+      <div style={{
+        position: 'relative', zIndex: 3,
+        padding: '0 24px', maxWidth: '860px',
+        marginLeft: '0',
+      }}>
+        <div style={{
+          display: 'inline-flex', alignItems: 'center', gap: '8px',
+          background: 'rgba(250,181,17,0.15)',
+          border: '1px solid rgba(250,181,17,0.35)',
+          color: '#FAB511', fontSize: '11px', fontWeight: 700,
+          letterSpacing: '2.5px', textTransform: 'uppercase',
+          padding: '7px 18px', borderRadius: '30px', marginBottom: '20px',
+        }}>
           🌿 Municipio de Chachagüí
         </div>
 
-        <h1 className="text-[clamp(34px,8vw,80px)] font-extrabold text-white leading-tight">
-          Tierra de <span className="text-[#f0b020]">Aventura,</span>
-          <br />
-          Cultura y Paisajes
+        <h1 style={{
+          fontFamily: 'var(--font-playfair), Georgia, serif',
+          fontSize: 'clamp(34px, 8vw, 80px)',
+          fontWeight: 800, color: '#FFFFFF',
+          lineHeight: 1.05, margin: '0 0 16px',
+          letterSpacing: '-2px',
+        }}>
+          Tierra de{' '}
+          <span style={{ color: '#FAB511' }}>Aventura,</span>
+          <br />Cultura y Paisajes
         </h1>
 
-        <p className="mt-4 text-white/70 text-sm md:text-lg max-w-lg leading-relaxed">
+        <p style={{
+          color: 'rgba(255,255,255,0.65)', fontSize: '16px',
+          maxWidth: '520px', lineHeight: 1.8,
+          fontWeight: 300, margin: '0 0 28px',
+        }}>
           Descubre la magia de Chachagüí: tradiciones ancestrales, paisajes
           de montaña y gastronomía única en el corazón de Nariño.
         </p>
 
-        <div className="flex flex-col sm:flex-row gap-3 mt-6">
-          <a
-            href="#naturaleza"
-            className="bg-[#f0b020] text-black font-bold px-6 py-3 rounded-full shadow-lg text-center"
-          >
+        <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+          <a href="#naturaleza" style={{
+            background: '#FAB511',
+            color: '#1C2316', fontWeight: 800,
+            padding: '14px 32px', borderRadius: '50px',
+            textDecoration: 'none', fontSize: '14px',
+            boxShadow: '0 8px 28px rgba(250,181,17,0.4)',
+            transition: 'transform 0.2s, box-shadow 0.2s',
+          }}>
             Explorar Destino
           </a>
-
-          <a
-            href="#aventura"
-            className="border border-white/30 text-white px-6 py-3 rounded-full text-center"
-          >
+          <a href="#aventura" style={{
+            border: '1.5px solid rgba(255,255,255,0.3)',
+            color: '#FFFFFF', fontWeight: 600,
+            padding: '14px 28px', borderRadius: '50px',
+            textDecoration: 'none', fontSize: '14px',
+          }}>
             Ver rutas →
           </a>
         </div>
       </div>
 
-      {/* Controles */}
-      <div className="absolute bottom-12 right-10 z-30 flex gap-2">
-        <button
-          onClick={anterior}
-          className="w-10 h-10 rounded-full border border-white/30 text-white flex items-center justify-center"
-        >
-          ←
-        </button>
-        <button
-          onClick={siguiente}
-          className="w-10 h-10 rounded-full border border-white/30 text-white flex items-center justify-center"
-        >
-          →
-        </button>
+      {/* Stats abajo izquierda */}
+      <div style={{
+        position: 'absolute', bottom: '52px', left: '40px', zIndex: 3,
+        display: 'flex', alignItems: 'center', gap: '24px',
+      }}>
+        {[
+          { valor: '1.800m', label: 'Altitud' },
+          { valor: '18°C',   label: 'Clima' },
+          { valor: '7',      label: 'Categorías' },
+        ].map((stat, i) => (
+          <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '24px' }}>
+            {i > 0 && (
+              <div style={{ width: '1px', height: '36px', background: 'rgba(255,255,255,0.15)' }} />
+            )}
+            <div>
+              <div style={{ fontSize: '22px', fontWeight: 800, color: '#FAB511', lineHeight: 1 }}>
+                {stat.valor}
+              </div>
+              <div style={{
+                fontSize: '9px', color: 'rgba(255,255,255,0.4)',
+                letterSpacing: '2px', textTransform: 'uppercase', marginTop: '3px',
+              }}>
+                {stat.label}
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Controles abajo derecha */}
+      <div style={{
+        position: 'absolute', bottom: '52px', right: '40px', zIndex: 3,
+        display: 'flex', gap: '10px',
+      }}>
+        {[{ fn: anterior, icon: '←' }, { fn: siguiente, icon: '→' }].map(({ fn, icon }) => (
+          <button
+            key={icon}
+            onClick={fn}
+            style={{
+              width: '44px', height: '44px', borderRadius: '50%',
+              border: '1.5px solid rgba(255,255,255,0.25)',
+              background: 'rgba(255,255,255,0.06)',
+              color: '#FFFFFF', fontSize: '16px',
+              cursor: 'pointer', display: 'flex',
+              alignItems: 'center', justifyContent: 'center',
+              transition: 'all 0.2s',
+            }}
+          >
+            {icon}
+          </button>
+        ))}
       </div>
 
       {/* Dots */}
-      <div className="absolute bottom-5 left-1/2 -translate-x-1/2 z-30 flex gap-2">
+      <div style={{
+        position: 'absolute', bottom: '20px',
+        left: '50%', transform: 'translateX(-50%)',
+        zIndex: 3, display: 'flex', gap: '8px',
+      }}>
         {slides.map((_, i) => (
           <button
             key={i}
             onClick={() => setActual(i)}
-            className={`h-2 transition-all ${
-              i === actual
-                ? 'w-6 bg-[#f0b020] rounded-full'
-                : 'w-2 bg-white/40 rounded-full'
-            }`}
+            style={{
+              width: i === actual ? '28px' : '8px',
+              height: '8px',
+              borderRadius: i === actual ? '4px' : '50%',
+              background: i === actual ? '#FAB511' : 'rgba(255,255,255,0.3)',
+              border: 'none', cursor: 'pointer',
+              transition: 'all 0.35s', padding: 0,
+            }}
           />
         ))}
       </div>

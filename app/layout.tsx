@@ -28,10 +28,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="es">
-      <body
-        className={`${playfair.variable} ${raleway.variable}`}
-        style={{ fontFamily: 'var(--font-raleway), system-ui, sans-serif', background: '#fdf6ec', margin: 0 }}
-      >
+    <body
+    className={`${playfair.variable} ${raleway.variable}`}
+      style={{ fontFamily: 'var(--font-raleway), system-ui, sans-serif', background: '#FFF6E6', margin: 0 }}
+    >
         <Navbar />
         {children}
       </body>
