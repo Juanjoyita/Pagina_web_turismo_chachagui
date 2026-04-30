@@ -1,9 +1,10 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { naturaleza } from '@/data/naturaleza'
+import GaleriaNaturaleza from '@/components/GaleriaNaturaleza'
 
 const coloresCat: Record<string, string> = {
-  Reserva: '#4A7C59',
+  Reserva: 'var(--color-verde-claro)',
   Cascada: '#1a5a7a',
   Sendero: '#7a5a1a',
   Mirador: '#7a3a1a',
@@ -19,26 +20,46 @@ export default async function DetalleNaturaleza({
   const item = naturaleza.find(n => n.slug === slug)
   if (!item) notFound()
 
-  const color = coloresCat[item.categoria] || '#4A7C59'
+  const color = coloresCat[item.categoria] || 'var(--color-verde-claro)'
   const relacionados = naturaleza
     .filter(n => n.categoria === item.categoria && n.slug !== slug)
     .slice(0, 3)
 
-  return (
-    <main style={{ paddingTop: '64px', background: '#FFF6E6', minHeight: '100vh' }}>
+  const galeria = item.imagenes && item.imagenes.length > 0
+    ? item.imagenes
+    : [item.imagen]
 
-      {/* Hero */}
+  const portada = galeria[0]
+
+  return (
+    <main style={{ paddingTop: '64px', background: 'var(--color-fondo)', minHeight: '100vh' }}>
+
+      {/* Hero con imagen de fondo */}
       <div style={{
-        background: '#1C2316',
-        backgroundImage: 'linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px)',
-        backgroundSize: '36px 36px',
+        position: 'relative',
         padding: '72px 0 80px',
+        overflow: 'hidden',
+        background: 'var(--color-verde-oscuro)',
       }}>
-        <div style={{ maxWidth: '900px', margin: '0 auto', padding: '0 40px' }}>
+        {/* Imagen de fondo del hero */}
+        <div style={{
+          position: 'absolute', inset: 0,
+          backgroundImage: `url(${portada})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          opacity: 0.35,
+        }} />
+        <div style={{
+          position: 'absolute', inset: 0,
+          background:
+            'linear-gradient(to right, rgba(var(--color-verde-oscuro-rgb), 0.95) 0%, rgba(var(--color-verde-oscuro-rgb), 0.75) 60%, rgba(var(--color-verde-oscuro-rgb), 0.55) 100%)',
+        }} />
+
+        <div style={{ position: 'relative', maxWidth: '900px', margin: '0 auto', padding: '0 40px' }}>
 
           <Link href="/#naturaleza" style={{
             display: 'inline-flex', alignItems: 'center', gap: '6px',
-            color: '#FAB511', fontSize: '13px', fontWeight: 600,
+            color: 'var(--color-verde-claro)', fontSize: '13px', fontWeight: 600,
             textDecoration: 'none', marginBottom: '32px', opacity: 0.85,
           }}>
             ← Volver a Naturaleza
@@ -48,7 +69,7 @@ export default async function DetalleNaturaleza({
             display: 'inline-flex', alignItems: 'center', gap: '8px',
             background: `${color}22`,
             border: `1px solid ${color}44`,
-            color: '#FAB511', fontSize: '10px', fontWeight: 700,
+            color: 'var(--color-verde-claro)', fontSize: '10px', fontWeight: 700,
             letterSpacing: '3px', textTransform: 'uppercase',
             padding: '5px 14px', borderRadius: '30px', marginBottom: '20px',
           }}>
@@ -56,16 +77,16 @@ export default async function DetalleNaturaleza({
           </div>
 
           <h1 style={{
-            fontFamily: 'var(--font-playfair), Georgia, serif',
+            fontFamily: 'var(--font-titulo)',
             fontSize: 'clamp(28px, 4vw, 52px)',
             fontWeight: 800, color: '#FFFFFF',
             letterSpacing: '-1.5px', lineHeight: 1.1, marginBottom: '16px',
           }}>
-            {item.nombre}
+            {item.tituloCompleto || item.nombre}
           </h1>
 
           <p style={{
-            fontSize: '16px', color: 'rgba(255,255,255,0.55)',
+            fontSize: '16px', color: 'rgba(255,255,255,0.75)',
             fontWeight: 300, lineHeight: 1.8, maxWidth: '640px',
           }}>
             {item.descripcion}
@@ -75,32 +96,15 @@ export default async function DetalleNaturaleza({
       </div>
 
       {/* Contenido */}
-      <div style={{ maxWidth: '900px', margin: '0 auto', padding: '64px 40px' }}>
+      <div style={{ maxWidth: '1080px', margin: '0 auto', padding: '64px 40px' }}>
 
-        {/* Imagen */}
-        <div style={{
-          width: '100%', aspectRatio: '16/9',
-          background: `linear-gradient(135deg, ${color}, #1C2316)`,
-          borderRadius: '20px', marginBottom: '48px',
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          boxShadow: '0 16px 48px rgba(28,35,22,0.15)',
-          position: 'relative', overflow: 'hidden',
-        }}>
-          <div style={{
-            position: 'absolute', top: '-40px', right: '-40px',
-            width: '200px', height: '200px', borderRadius: '50%',
-            background: 'rgba(250,181,17,0.1)',
-          }} />
-          <div style={{ position: 'relative', zIndex: 1, textAlign: 'center' }}>
-            <div style={{ fontSize: '80px', marginBottom: '12px' }}>{item.emoji}</div>
-            <p style={{
-              color: 'rgba(255,255,255,0.35)', fontSize: '11px',
-              letterSpacing: '3px', textTransform: 'uppercase', fontWeight: 600,
-            }}>
-              Foto próximamente
-            </p>
-          </div>
-        </div>
+        {/* Galería principal con lightbox */}
+        <GaleriaNaturaleza
+          imagenes={galeria}
+          nombre={item.nombre}
+          categoria={item.categoria}
+          tipo={item.tipo}
+        />
 
         {/* Info rápida */}
         <div style={{
@@ -116,11 +120,11 @@ export default async function DetalleNaturaleza({
           ].map(info => (
             <div key={info.label} style={{
               background: '#FFFFFF', borderRadius: '14px', padding: '20px',
-              borderTop: '1.5px solid #E8E0D4',
-              borderRight: '1.5px solid #E8E0D4',
-              borderBottom: '1.5px solid #E8E0D4',
+              borderTop: '1.5px solid var(--color-borde)',
+              borderRight: '1.5px solid var(--color-borde)',
+              borderBottom: '1.5px solid var(--color-borde)',
               borderLeft: `4px solid ${color}`,
-              boxShadow: '0 2px 10px rgba(28,35,22,0.05)',
+              boxShadow: '0 2px 10px rgba(var(--color-verde-oscuro-rgb), 0.05)',
             }}>
               <div style={{
                 fontSize: '9px', fontWeight: 700, letterSpacing: '2px',
@@ -128,7 +132,7 @@ export default async function DetalleNaturaleza({
               }}>
                 {info.label}
               </div>
-              <div style={{ fontSize: '14px', color: '#1C2316', fontWeight: 600, lineHeight: 1.4 }}>
+              <div style={{ fontSize: '14px', color: 'var(--color-verde-oscuro)', fontWeight: 600, lineHeight: 1.4 }}>
                 {info.valor}
               </div>
             </div>
@@ -138,53 +142,71 @@ export default async function DetalleNaturaleza({
         {/* Descripción completa */}
         <div style={{ marginBottom: '52px' }}>
           <h2 style={{
-            fontFamily: 'var(--font-playfair), Georgia, serif',
+            fontFamily: 'var(--font-titulo)',
             fontSize: '24px', fontWeight: 700,
-            color: '#1C2316', marginBottom: '20px',
+            color: 'var(--color-verde-oscuro)', marginBottom: '20px',
           }}>
             Sobre este lugar
           </h2>
-          <p style={{
-            fontSize: '16px', color: 'rgba(28,35,22,0.72)',
-            lineHeight: 1.9, fontWeight: 300,
-          }}>
-            {item.descripcion}
-          </p>
+          {(item.descripcionCompleta || item.descripcion)
+            .split('\n\n')
+            .map((parrafo, i) => (
+              <p key={i} style={{
+                fontSize: '16px', color: 'rgba(var(--color-verde-oscuro-rgb), 0.72)',
+                lineHeight: 1.9, fontWeight: 300, marginBottom: '18px',
+              }}>
+                {parrafo}
+              </p>
+            ))}
         </div>
 
         {/* Relacionados */}
         {relacionados.length > 0 && (
           <div>
             <h3 style={{
-              fontFamily: 'var(--font-playfair), Georgia, serif',
+              fontFamily: 'var(--font-titulo)',
               fontSize: '18px', fontWeight: 700,
-              color: '#1C2316', marginBottom: '16px',
+              color: 'var(--color-verde-oscuro)', marginBottom: '16px',
             }}>
               Otros lugares de {item.categoria.toLowerCase()}
             </h3>
             <div style={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
               gap: '14px',
             }}>
               {relacionados.map(rel => (
                 <Link key={rel.slug} href={`/naturaleza/${rel.slug}`} style={{
-                  display: 'flex', alignItems: 'center', gap: '12px',
-                  padding: '14px 16px', borderRadius: '12px',
+                  display: 'flex', flexDirection: 'column',
+                  borderRadius: '14px', overflow: 'hidden',
                   textDecoration: 'none', background: '#FFFFFF',
-                  borderTop: '1.5px solid #E8E0D4',
-                  borderRight: '1.5px solid #E8E0D4',
-                  borderBottom: '1.5px solid #E8E0D4',
+                  borderTop: '1.5px solid var(--color-borde)',
+                  borderRight: '1.5px solid var(--color-borde)',
+                  borderBottom: '1.5px solid var(--color-borde)',
                   borderLeft: `4px solid ${color}`,
-                  transition: 'opacity 0.2s',
+                  transition: 'transform 0.2s, box-shadow 0.2s',
+                  boxShadow: '0 2px 10px rgba(var(--color-verde-oscuro-rgb), 0.05)',
                 }}>
-                  <span style={{ fontSize: '24px' }}>{rel.emoji}</span>
-                  <div>
-                    <div style={{ fontSize: '13px', fontWeight: 600, color: '#1C2316', lineHeight: 1.3 }}>
+                  <div style={{
+                    width: '100%', aspectRatio: '4/3',
+                    overflow: 'hidden', background: 'var(--color-verde-oscuro)',
+                  }}>
+                    <img
+                      src={rel.imagen}
+                      alt={rel.nombre}
+                      loading="lazy"
+                      style={{
+                        width: '100%', height: '100%',
+                        objectFit: 'cover', display: 'block',
+                      }}
+                    />
+                  </div>
+                  <div style={{ padding: '14px 16px' }}>
+                    <div style={{ fontSize: '13px', fontWeight: 700, color: 'var(--color-verde-oscuro)', lineHeight: 1.3 }}>
                       {rel.nombre}
                     </div>
-                    <div style={{ fontSize: '11px', color: 'rgba(28,35,22,0.45)', marginTop: '2px' }}>
-                      {rel.ubicacion}
+                    <div style={{ fontSize: '11px', color: 'rgba(var(--color-verde-oscuro-rgb), 0.5)', marginTop: '4px' }}>
+                      📍 {rel.ubicacion}
                     </div>
                   </div>
                 </Link>

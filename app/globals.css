@@ -1,23 +1,78 @@
 @import "tailwindcss";
 
-@theme {
-  --color-verde:         #4A7C59;
-  --color-verde-oscuro:  #1C2316;
-  --color-verde-claro:   #6A9E7A;
-  --color-dorado:        #FAB511;
-  --color-dorado-claro:  #FFC94A;
-  --color-crema:         #FFF6E6;
-  --color-crema-oscuro:  #F5E8CC;
-  --color-blanco:        #FFFFFF;
-  --color-texto:         #1C2316;
-  --color-texto2:        #4A3820;
+/* ==========================================================================
+   PALETA DE COLORES — FUENTE ÚNICA DE VERDAD
+   ==========================================================================
+   Para cambiar los colores de TODO el sitio, edita los valores HEX y los RGB
+   correspondientes en este bloque. No es necesario tocar ningún otro archivo.
 
-  --font-sans:    var(--font-raleway), system-ui, sans-serif;
-  --font-display: var(--font-playfair), Georgia, serif;
+   Importante: cada color tiene dos formas:
+     • Versión HEX (--color-XXX)        →  ej.  background: var(--color-acento)
+     • Versión RGB (--color-XXX-rgb)    →  ej.  background: rgba(var(--color-acento-rgb), 0.4)
+
+   Si cambias el HEX, recuerda cambiar también los tres números RGB
+   correspondientes (sin paréntesis, separados por comas).
+
+   Conversor rápido:  https://www.rapidtables.com/convert/color/hex-to-rgb.html
+   ========================================================================== */
+
+:root {
+  /* ---------- Color principal: VERDE OSCURO ----------
+     Se usa en: fondos oscuros, textos principales, encabezados        */
+  --color-verde-oscuro:     #1C2316;
+  --color-verde-oscuro-rgb: 28, 35, 22;
+
+  /* ---------- Color de ACENTO: VERDE CLARO ----------
+     Se usa en: botones, líneas, detalles, badges, hover               */
+  --color-verde-claro:        #CAD74B;
+  --color-verde-claro-rgb:    202, 215, 75;
+  --color-verde-claro-hover:  #D8E25C;
+
+  /* ---------- Neutros ---------- */
+  --color-fondo:     #F1F1F1;   /* fondo gris suave de las secciones    */
+  --color-borde:     #E8E0D4;   /* beige para bordes de tarjetas        */
+  --color-blanco:    #FFFFFF;
+  --color-crema:     #FFF6E6;   /* texto claro sobre fondos oscuros     */
+  --color-crema-rgb: 255, 246, 230;
+
+  /* ---------- Aliases legados (compatibilidad con Tailwind v4) ----------
+     No los uses directamente — apuntan a los colores reales de arriba. */
+  --color-oscuro:        var(--color-verde-oscuro);
+  --color-gris-claro:    var(--color-fondo);
+  --color-lima:          var(--color-verde-claro);
+  --color-lima-claro:    #d4e060;   /* legacy — valor exacto original */
+  --color-dorado:        var(--color-verde-claro);
+  --color-dorado-claro:  #d4e060;   /* legacy — valor exacto original */
+  --color-verde:         var(--color-verde-oscuro);
+  --color-gris:          #555555;
+  --color-texto:         var(--color-verde-oscuro);
+  --color-texto2:        #555555;
+
+  /* ==========================================================================
+     TIPOGRAFÍA
+     ==========================================================================
+     Para CAMBIAR las fuentes del sitio:
+       1. Abre  app/layout.tsx
+       2. Cambia las fuentes que se importan de Google Fonts (líneas 2 y 8-19)
+       3. (Opcional) Si renombras las variables, actualiza --font-titulo y
+          --font-cuerpo de abajo para que apunten al nuevo nombre.
+
+     Para usar otra fuente en un componente puntual:
+       fontFamily: 'var(--font-cuerpo)'   ← cuerpo de texto (Raleway)
+       fontFamily: 'var(--font-titulo)'   ← títulos / encabezados (Playfair)
+     ========================================================================== */
+
+  --font-titulo:  var(--font-playfair),  Georgia, serif;       /* H1, H2, H3, títulos */
+  --font-cuerpo:  var(--font-raleway),   system-ui, sans-serif; /* párrafos, listas, UI */
+
+  /* Aliases legados — no los uses directamente */
+  --font-sans:    var(--font-cuerpo);
+  --font-display: var(--font-titulo);
 }
 
+/* ---------- Ajustes globales del navegador ---------- */
 html { scroll-behavior: smooth; }
 
 ::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: #FFF6E6; }
-::-webkit-scrollbar-thumb { background: #4A7C59; border-radius: 3px; }
+::-webkit-scrollbar-track { background: var(--color-fondo); }
+::-webkit-scrollbar-thumb { background: var(--color-verde-oscuro); border-radius: 3px; }

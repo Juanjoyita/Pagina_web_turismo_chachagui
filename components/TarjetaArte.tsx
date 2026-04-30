@@ -17,8 +17,8 @@ interface Props {
 
 export default function TarjetaArte({
   id, nombre, descripcion, emoji, extra, href,
-  color = '#4A7C59',
-  colorClaro = 'rgba(74,124,89,0.1)',
+  color = 'var(--color-verde-claro)',
+  colorClaro = 'rgba(var(--color-verde-claro-rgb), 0.1)',
 }: Props) {
   const [hover, setHover] = useState(false)
   const destino = href || `/arte/${id}`
@@ -32,13 +32,13 @@ export default function TarjetaArte({
           background: hover ? '#FFFFFF' : '#FFFFFF',
           borderRadius: '20px',
           padding: '28px 24px',
-          borderTop: `1.5px solid ${hover ? color : '#E8E0D4'}`,
-          borderRight: `1.5px solid ${hover ? color : '#E8E0D4'}`,
-          borderBottom: `1.5px solid ${hover ? color : '#E8E0D4'}`,
+          borderTop: `1.5px solid ${hover ? color : 'var(--color-borde)'}`,
+          borderRight: `1.5px solid ${hover ? color : 'var(--color-borde)'}`,
+          borderBottom: `1.5px solid ${hover ? color : 'var(--color-borde)'}`,
           borderLeft: `5px solid ${color}`,
           transition: 'all 0.28s ease',
           transform: hover ? 'translateY(-6px)' : 'translateY(0)',
-          boxShadow: hover ? `0 20px 48px rgba(28,35,22,0.12)` : '0 2px 12px rgba(28,35,22,0.05)',
+          boxShadow: hover ? `0 20px 48px rgba(var(--color-verde-oscuro-rgb), 0.12)` : '0 2px 12px rgba(var(--color-verde-oscuro-rgb), 0.05)',
           cursor: 'pointer', width: '100%',
           display: 'flex', flexDirection: 'column', gap: '12px',
         }}
@@ -56,9 +56,9 @@ export default function TarjetaArte({
 
         {/* Nombre */}
         <h3 style={{
-          fontFamily: 'var(--font-playfair), Georgia, serif',
+          fontFamily: 'var(--font-titulo)',
           fontSize: '18px', fontWeight: 700,
-          color: hover ? color : '#1C2316',
+          color: hover ? color : 'var(--color-verde-oscuro)',
           margin: 0, lineHeight: 1.2, transition: 'color 0.2s',
         }}>
           {nombre}
@@ -66,7 +66,7 @@ export default function TarjetaArte({
 
         {/* Descripción */}
         <p style={{
-          fontSize: '13px', color: 'rgba(28,35,22,0.6)',
+          fontSize: '13px', color: 'rgba(var(--color-verde-oscuro-rgb), 0.6)',
           lineHeight: 1.7, margin: 0, flex: 1, fontWeight: 300,
         }}>
           {descripcion}

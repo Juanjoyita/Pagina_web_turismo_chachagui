@@ -24,7 +24,7 @@ export default function TradicionesPage() {
         </div>
 
         <h1 style={{
-          fontFamily: 'var(--font-playfair), Georgia, serif',
+          fontFamily: 'var(--font-titulo)',
           fontSize: 'clamp(28px, 4vw, 48px)', fontWeight: 800,
           color: '#1a4a2e', letterSpacing: '-1px', marginBottom: '12px',
         }}>

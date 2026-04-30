@@ -25,8 +25,8 @@ const links = [
       { href: '/aventura/ciclomontanismo',      label: 'Ciclomontañismo' },
       { href: '/aventura/senderismo',          label: 'Senderismo' },
       { href: '/aventura/cascadas',            label: 'Recorridos a cascadas' },
-      { href: '/aventura/montana',             label: 'Exploración de montaña' },
-      { href: '/aventura/aves',                label: 'Avistamiento de aves' },
+      { href: '/aventura/exploracion-montana', label: 'Exploración de montaña' },
+      { href: '/aventura/avistamiento-aves',   label: 'Avistamiento de aves' },
     ],
   },
   {
@@ -46,8 +46,11 @@ const links = [
     label: 'Gastronomía',
     emoji: '🍲',
     sub: [
-      { href: '/gastronomia/platos',  label: 'Platos típicos' },
-      { href: '/gastronomia/helados', label: 'Heladerías' },
+      { href: '/gastronomia/arepas-de-choclo',  label: 'Arepas de choclo' },
+      { href: '/gastronomia/la-boda',           label: 'La Boda' },
+      { href: '/gastronomia/empanadas-de-anejo', label: 'Empanadas de añejo' },
+      { href: '/gastronomia/el-cuy',            label: 'El Cuy' },
+      { href: '/gastronomia/platos',            label: 'Ver todos los platos típicos →' },
     ],
   },
   {
@@ -55,8 +58,20 @@ const links = [
     label: 'Festividades',
     emoji: '🎉',
     sub: [
-      { href: '/festividades/cometas',    label: 'Festival de Cometas' },
-      { href: '/festividades/patronales', label: 'Fiestas Patronales' },
+      { href: '/festividades/festival-de-cometas',   label: 'Festival de Cometas · Agosto' },
+      { href: '/festividades/fiestas-virgen-de-fatima', label: 'Virgen de Fátima · Mayo' },
+      { href: '/festividades/feria-frutas-y-flores', label: 'Feria de Frutas y Flores · Enero' },
+    ],
+  },
+  {
+    href: '/#servicios',
+    label: 'Servicios',
+    emoji: '🛎️',
+    sub: [
+      { href: '/servicios/hospedaje',        label: 'Hospedaje' },
+      { href: '/servicios/guias-turisticos', label: 'Guías turísticos' },
+      { href: '/servicios/transporte',       label: 'Transporte' },
+      { href: '/servicios/restaurantes',     label: 'Restaurantes' },
     ],
   },
 ]
@@ -104,8 +119,8 @@ function NavItem({ link }: { link: typeof links[0] }) {
           href={link.href}
           style={{
             display: 'flex', alignItems: 'center', gap: '6px',
-            color: abierto ? '#FAB511' : '#FFFFFF',
-            background: abierto ? 'rgba(250,181,17,0.13)' : 'transparent',
+            color: abierto ? 'var(--color-verde-claro)' : '#FFFFFF',
+            background: abierto ? 'rgba(var(--color-verde-claro-rgb), 0.13)' : 'transparent',
             textDecoration: 'none',
             fontSize: '11.5px', fontWeight: 600,
             padding: '8px 12px', borderRadius: '8px',
@@ -133,8 +148,8 @@ function NavItem({ link }: { link: typeof links[0] }) {
         >
           <ul style={{
             listStyle: 'none', margin: 0, padding: '8px',
-            background: '#1C2316',
-            border: '1px solid rgba(250,181,17,0.25)',
+            background: 'var(--color-verde-oscuro)',
+            border: '1px solid rgba(var(--color-verde-claro-rgb), 0.25)',
             borderRadius: '14px',
             boxShadow: '0 16px 48px rgba(0,0,0,0.5)',
           }}>
@@ -153,8 +168,8 @@ function NavItem({ link }: { link: typeof links[0] }) {
                   }}
                   onMouseEnter={e => {
                     const el = e.currentTarget as HTMLElement
-                    el.style.color = '#FAB511'
-                    el.style.background = 'rgba(250,181,17,0.1)'
+                    el.style.color = 'var(--color-verde-claro)'
+                    el.style.background = 'rgba(var(--color-verde-claro-rgb), 0.1)'
                     el.style.paddingLeft = '18px'
                   }}
                   onMouseLeave={e => {
@@ -166,8 +181,8 @@ function NavItem({ link }: { link: typeof links[0] }) {
                 >
                   <span aria-hidden="true" style={{
                     width: '6px', height: '6px', borderRadius: '50%',
-                    background: '#FAB511', flexShrink: 0,
-                    boxShadow: '0 0 6px rgba(250,181,17,0.4)',
+                    background: 'var(--color-verde-claro)', flexShrink: 0,
+                    boxShadow: '0 0 6px rgba(var(--color-verde-claro-rgb), 0.4)',
                   }} />
                   {sub.label}
                 </Link>
@@ -199,9 +214,9 @@ export default function Navbar() {
       style={{
         position: 'fixed', top: 0, left: 0, right: 0, zIndex: 1000,
         height: '64px',
-        background: 'rgba(74,124,89,0.97)',
+        background: 'rgba(var(--color-verde-oscuro-rgb), 0.97)',
         backdropFilter: 'blur(16px)',
-        borderBottom: '1px solid rgba(250,181,17,0.2)',
+        borderBottom: '1px solid rgba(var(--color-verde-claro-rgb), 0.18)',
         display: 'flex', alignItems: 'center',
         justifyContent: 'space-between',
         padding: '0 36px',
@@ -217,10 +232,10 @@ export default function Navbar() {
         }}
       >
         <span aria-hidden="true" style={{
-          width: '38px', height: '38px', background: '#FAB511',
+          width: '38px', height: '38px', background: 'var(--color-verde-claro)',
           borderRadius: '50%', display: 'flex',
           alignItems: 'center', justifyContent: 'center', fontSize: '18px',
-          boxShadow: '0 4px 14px rgba(250,181,17,0.4)',
+          boxShadow: '0 4px 14px rgba(var(--color-verde-claro-rgb), 0.4)',
         }}>
           🌿
         </span>
@@ -232,7 +247,7 @@ export default function Navbar() {
             Chachagüí
           </strong>
           <small style={{
-            color: '#FFF6E6', fontSize: '8.5px',
+            color: 'var(--color-fondo)', fontSize: '8.5px',
             letterSpacing: '2.5px', textTransform: 'uppercase',
           }}>
             Nariño · Colombia
@@ -291,8 +306,8 @@ export default function Navbar() {
           aria-label="Menú móvil"
           style={{
             position: 'fixed', top: '64px', left: 0, right: 0, zIndex: 999,
-            background: '#1C2316',
-            borderBottom: '2px solid rgba(250,181,17,0.3)',
+            background: 'var(--color-verde-oscuro)',
+            borderBottom: '2px solid rgba(var(--color-verde-claro-rgb), 0.3)',
             maxHeight: 'calc(100vh - 64px)',
             overflowY: 'auto',
             padding: '8px 0 32px',
@@ -351,7 +366,7 @@ export default function Navbar() {
                       >
                         <span aria-hidden="true" style={{
                           width: '5px', height: '5px', borderRadius: '50%',
-                          background: '#FAB511', flexShrink: 0,
+                          background: 'var(--color-verde-claro)', flexShrink: 0,
                         }} />
                         {sub.label}
                       </Link>

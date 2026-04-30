@@ -8,17 +8,8 @@ import { naturaleza } from '@/data/naturaleza'
 
 const categorias = ['Todos', 'Reserva', 'Cascada', 'Sendero', 'Mirador', 'Finca']
 
-const coloresCat: Record<string, string> = {
-  Reserva: '#1C2316',
-  Cascada: '#1C2316',
-  Sendero: '#1C2316',
-  Mirador: '#1C2316',
-  Finca:   '#1C2316',
-}
-
 function CardNaturaleza({ item }: { item: typeof naturaleza[0] }) {
   const [hover, setHover] = useState(false)
-  const color = coloresCat[item.categoria] || '#1C2316'
 
   return (
     <Link href={`/naturaleza/${item.slug}`} style={{ textDecoration: 'none', display: 'block' }}>
@@ -27,90 +18,146 @@ function CardNaturaleza({ item }: { item: typeof naturaleza[0] }) {
         onMouseLeave={() => setHover(false)}
         style={{
           background: '#FFFFFF',
-          borderRadius: '18px',
+          borderRadius: '16px',
           overflow: 'hidden',
-          borderTop: `1.5px solid ${hover ? '#CAD74B' : '#E8E0D4'}`,
-          borderRight: `1.5px solid ${hover ? '#CAD74B' : '#E8E0D4'}`,
-          borderBottom: `1.5px solid ${hover ? '#CAD74B' : '#E8E0D4'}`,
-          borderLeft: `5px solid ${hover ? '#CAD74B' : '#1C2316'}`,
-          transition: 'all 0.28s',
-          transform: hover ? 'translateY(-6px)' : 'translateY(0)',
-          boxShadow: hover ? '0 20px 48px rgba(28,35,22,0.14)' : '0 2px 12px rgba(28,35,22,0.05)',
+          borderLeft: `4px solid ${hover ? 'var(--color-verde-claro)' : 'var(--color-verde-oscuro)'}`,
+          transition: 'transform 0.28s, box-shadow 0.28s, border-color 0.28s',
+          transform: hover ? 'translateY(-4px)' : 'translateY(0)',
+          boxShadow: hover
+            ? '0 14px 34px rgba(var(--color-verde-oscuro-rgb), 0.10)'
+            : '0 1px 3px rgba(var(--color-verde-oscuro-rgb), 0.04)',
           cursor: 'pointer',
           display: 'flex',
           flexDirection: 'column',
         }}
       >
-        {/* Imagen placeholder */}
-        <div style={{
-          width: '100%', aspectRatio: '16/10',
-          background: hover
-            ? 'linear-gradient(135deg, rgba(202,215,75,0.2), rgba(202,215,75,0.35))'
-            : 'linear-gradient(135deg, rgba(28,35,22,0.08), rgba(28,35,22,0.15))',
-          display: 'flex', alignItems: 'center',
-          justifyContent: 'center', fontSize: '48px',
-          position: 'relative', transition: 'background 0.28s',
-        }}>
-          {item.emoji}
-          <div style={{
-            position: 'absolute', top: '12px', right: '12px',
-            background: hover ? '#CAD74B' : '#1C2316',
-            color: hover ? '#1C2316' : '#FFFFFF',
-            fontSize: '9px', fontWeight: 700,
-            letterSpacing: '1.5px', textTransform: 'uppercase',
-            padding: '4px 10px', borderRadius: '20px',
-            transition: 'all 0.28s',
-          }}>
+        {/* Imagen real de la card */}
+        <div
+          style={{
+            width: '100%',
+            aspectRatio: '4/3',
+            position: 'relative',
+            overflow: 'hidden',
+            background: 'var(--color-verde-oscuro)',
+          }}
+        >
+          <img
+            src={item.imagen}
+            alt={item.nombre}
+            loading="lazy"
+            style={{
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
+              display: 'block',
+              transform: hover ? 'scale(1.08)' : 'scale(1)',
+              transition: 'transform 0.5s ease',
+            }}
+          />
+          {/* Degradado sutil inferior para legibilidad del badge */}
+          <div
+            style={{
+              position: 'absolute',
+              inset: 0,
+              background:
+                'linear-gradient(180deg, rgba(var(--color-verde-oscuro-rgb), 0) 40%, rgba(var(--color-verde-oscuro-rgb), 0.35) 100%)',
+              pointerEvents: 'none',
+            }}
+          />
+          <div
+            style={{
+              position: 'absolute',
+              top: '12px',
+              right: '12px',
+              background: hover ? 'var(--color-verde-claro)' : 'rgba(var(--color-verde-oscuro-rgb), 0.85)',
+              color: hover ? 'var(--color-verde-oscuro)' : '#FFFFFF',
+              fontSize: '9px',
+              fontWeight: 700,
+              letterSpacing: '1.5px',
+              textTransform: 'uppercase',
+              padding: '4px 10px',
+              borderRadius: '20px',
+              transition: 'all 0.28s',
+              backdropFilter: 'blur(4px)',
+            }}
+          >
             {item.categoria}
           </div>
         </div>
 
         {/* Contenido */}
-        <div style={{ padding: '20px', flex: 1, display: 'flex', flexDirection: 'column', gap: '8px' }}>
-          <h3 style={{
-            fontFamily: 'var(--font-playfair), Georgia, serif',
-            fontSize: '17px', fontWeight: 700,
-            color: hover ? '#CAD74B' : '#1C2316',
-            margin: 0, lineHeight: 1.2, transition: 'color 0.2s',
-          }}>
+        <div
+          style={{
+            padding: '20px 22px 22px',
+            flex: 1,
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '10px',
+          }}
+        >
+          <h3
+            style={{
+              fontFamily: 'var(--font-titulo)',
+              fontSize: '17px',
+              fontWeight: 700,
+              color: hover ? 'var(--color-verde-claro)' : 'var(--color-verde-oscuro)',
+              margin: 0,
+              lineHeight: 1.2,
+              transition: 'color 0.2s',
+            }}
+          >
             {item.nombre}
           </h3>
 
-          <p style={{
-            fontSize: '12px', color: 'rgba(28,35,22,0.55)',
-            lineHeight: 1.65, margin: 0, flex: 1, fontWeight: 300,
-          }}>
-            {item.descripcion.length > 120
-              ? item.descripcion.slice(0, 120) + '...'
+          <p
+            style={{
+              fontSize: '12.5px',
+              color: 'rgba(var(--color-verde-oscuro-rgb), 0.55)',
+              lineHeight: 1.65,
+              margin: 0,
+              flex: 1,
+              fontWeight: 300,
+            }}
+          >
+            {item.descripcion.length > 80
+              ? item.descripcion.slice(0, 80) + '…'
               : item.descripcion}
           </p>
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', marginTop: '4px' }}>
-            <span style={{ fontSize: '11px', color: '#1C2316', fontWeight: 600 }}>
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              gap: '12px',
+              marginTop: '2px',
+            }}
+          >
+            <span
+              style={{
+                fontSize: '11px',
+                color: 'rgba(var(--color-verde-oscuro-rgb), 0.45)',
+                fontWeight: 500,
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap',
+              }}
+            >
               📍 {item.ubicacion}
             </span>
-            <span style={{ fontSize: '11px', color: 'rgba(28,35,22,0.45)', fontWeight: 400 }}>
-              {item.actividades}
+            <span
+              style={{
+                fontSize: '12px',
+                color: hover ? 'var(--color-verde-claro)' : 'rgba(var(--color-verde-oscuro-rgb), 0.4)',
+                fontWeight: 700,
+                whiteSpace: 'nowrap',
+                transition: 'color 0.2s, transform 0.2s',
+                transform: hover ? 'translateX(3px)' : 'translateX(0)',
+                flexShrink: 0,
+              }}
+            >
+              Ver más →
             </span>
-          </div>
-
-          <div style={{
-            display: 'flex', alignItems: 'center',
-            justifyContent: 'space-between', marginTop: '8px',
-          }}>
-            <span style={{ fontSize: '12px', color: hover ? '#CAD74B' : '#1C2316', fontWeight: 700, transition: 'color 0.2s' }}>
-              Ver más
-            </span>
-            <div style={{
-              width: '28px', height: '28px', borderRadius: '50%',
-              background: hover ? 'rgba(202,215,75,0.2)' : 'rgba(28,35,22,0.06)',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              fontSize: '13px', color: hover ? '#CAD74B' : '#1C2316',
-              transition: 'all 0.25s',
-              transform: hover ? 'translateX(4px)' : 'translateX(0)',
-            }}>
-              →
-            </div>
           </div>
         </div>
       </div>
@@ -125,7 +172,6 @@ export default function Naturaleza() {
     categoriaParam && categorias.includes(categoriaParam) ? categoriaParam : 'Todos'
   )
 
-  // Cuando cambia la URL actualiza el filtro
   useEffect(() => {
     if (categoriaParam && categorias.includes(categoriaParam)) {
       setCatActiva(categoriaParam)
@@ -134,17 +180,24 @@ export default function Naturaleza() {
     }
   }, [categoriaParam])
 
-  const filtrados = catActiva === 'Todos'
-    ? naturaleza
-    : naturaleza.filter(n => n.categoria === catActiva)
+  const filtrados =
+    catActiva === 'Todos'
+      ? naturaleza
+      : naturaleza.filter((n) => n.categoria === catActiva)
+
+  const stats = [
+    { valor: '12', label: 'Lugares' },
+    { valor: '4', label: 'Reservas' },
+    { valor: '2', label: 'Cascadas' },
+    { valor: '2', label: 'Fincas' },
+  ]
 
   return (
     <section
       id="naturaleza"
       style={{
         padding: '100px 0',
-        background: '#F1F1F1',
-        backgroundImage: 'repeating-linear-gradient(-55deg, transparent, transparent 14px, rgba(28,35,22,0.02) 14px, rgba(28,35,22,0.02) 15px)',
+        background: 'var(--color-fondo)',
       }}
     >
       <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '0 40px' }}>
@@ -152,34 +205,39 @@ export default function Naturaleza() {
         {/* Encabezado */}
         <AnimarAlEntrar direccion="arriba">
           <div style={{ textAlign: 'center', marginBottom: '48px' }}>
-            <div style={{
-              display: 'inline-flex', alignItems: 'center', gap: '8px',
-              background: 'rgba(28,35,22,0.08)', color: '#1C2316',
-              fontSize: '10px', fontWeight: 700, letterSpacing: '3px',
-              textTransform: 'uppercase', padding: '6px 18px',
-              borderRadius: '30px', marginBottom: '20px',
-            }}>
-              🏞️ Sección 03
-            </div>
-            <h2 style={{
-              fontFamily: 'var(--font-playfair), Georgia, serif',
-              fontSize: 'clamp(32px, 5vw, 56px)',
-              fontWeight: 800, color: '#1C2316',
-              letterSpacing: '-1.5px', lineHeight: 1.05,
-              marginBottom: '20px',
-            }}>
-              Naturaleza y <em style={{ fontStyle: 'italic', color: '#CAD74B' }}>Paisajes</em>
+            <h2
+              style={{
+                fontFamily: 'var(--font-titulo)',
+                fontSize: 'clamp(32px, 5vw, 56px)',
+                fontWeight: 800,
+                color: 'var(--color-verde-oscuro)',
+                letterSpacing: '-1.5px',
+                lineHeight: 1.05,
+                marginBottom: '20px',
+              }}
+            >
+              Naturaleza y{' '}
+              <em style={{ fontStyle: 'italic', color: 'var(--color-verde-claro)' }}>Paisajes</em>
             </h2>
-            <div style={{
-              width: '60px', height: '4px',
-              background: 'linear-gradient(90deg, #1C2316, #CAD74B)',
-              borderRadius: '2px', margin: '0 auto 20px',
-            }} />
-            <p style={{
-              fontSize: '16px', color: 'rgba(28,35,22,0.6)',
-              fontWeight: 300, lineHeight: 1.8,
-              maxWidth: '600px', margin: '0 auto',
-            }}>
+            <div
+              style={{
+                width: '60px',
+                height: '4px',
+                background: 'linear-gradient(90deg, var(--color-verde-oscuro), var(--color-verde-claro))',
+                borderRadius: '2px',
+                margin: '0 auto 20px',
+              }}
+            />
+            <p
+              style={{
+                fontSize: '16px',
+                color: 'rgba(var(--color-verde-oscuro-rgb), 0.6)',
+                fontWeight: 300,
+                lineHeight: 1.8,
+                maxWidth: '600px',
+                margin: '0 auto',
+              }}
+            >
               Cascadas, reservas naturales, senderos y fincas cafeteras que forman
               uno de los paisajes más hermosos del sur de Colombia.
             </p>
@@ -188,24 +246,33 @@ export default function Naturaleza() {
 
         {/* Filtros */}
         <AnimarAlEntrar direccion="arriba" delay={100}>
-          <div style={{
-            display: 'flex', gap: '10px', flexWrap: 'wrap',
-            justifyContent: 'center', marginBottom: '48px',
-          }}>
-            {categorias.map(cat => (
+          <div
+            style={{
+              display: 'flex',
+              gap: '10px',
+              flexWrap: 'wrap',
+              justifyContent: 'center',
+              marginBottom: '48px',
+            }}
+          >
+            {categorias.map((cat) => (
               <button
                 key={cat}
                 onClick={() => setCatActiva(cat)}
                 style={{
-                  padding: '8px 20px', borderRadius: '30px',
-                  fontSize: '12px', fontWeight: 700,
-                  cursor: 'pointer', transition: 'all 0.2s',
+                  padding: '8px 20px',
+                  borderRadius: '30px',
+                  fontSize: '12px',
+                  fontWeight: 700,
+                  cursor: 'pointer',
+                  transition: 'all 0.2s',
                   border: 'none',
-                  background: catActiva === cat ? '#1C2316' : '#FFFFFF',
-                  color: catActiva === cat ? '#CAD74B' : 'rgba(28,35,22,0.6)',
-                  boxShadow: catActiva === cat
-                    ? '0 4px 16px rgba(28,35,22,0.25)'
-                    : '0 2px 8px rgba(28,35,22,0.08)',
+                  background: catActiva === cat ? 'var(--color-verde-oscuro)' : '#FFFFFF',
+                  color: catActiva === cat ? 'var(--color-verde-claro)' : 'rgba(var(--color-verde-oscuro-rgb), 0.6)',
+                  boxShadow:
+                    catActiva === cat
+                      ? '0 4px 16px rgba(var(--color-verde-oscuro-rgb), 0.25)'
+                      : '0 1px 4px rgba(var(--color-verde-oscuro-rgb), 0.05)',
                 }}
               >
                 {cat}
@@ -215,11 +282,13 @@ export default function Naturaleza() {
         </AnimarAlEntrar>
 
         {/* Grid */}
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
-          gap: '24px',
-        }}>
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))',
+            gap: '24px',
+          }}
+        >
           {filtrados.map((item, i) => (
             <AnimarAlEntrar key={item.id} direccion="arriba" delay={i * 60}>
               <CardNaturaleza item={item} />
@@ -227,43 +296,67 @@ export default function Naturaleza() {
           ))}
         </div>
 
-        {/* Stats */}
+        {/* Stats strip — sin cajas, al estilo del hero */}
         <AnimarAlEntrar direccion="arriba" delay={200}>
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(4, 1fr)',
-            gap: '16px',
-            marginTop: '64px',
-          }}>
-            {[
-              { valor: '12', label: 'Lugares naturales', emoji: '🗺️' },
-              { valor: '4',  label: 'Reservas naturales', emoji: '🌿' },
-              { valor: '2',  label: 'Cascadas',           emoji: '💧' },
-              { valor: '2',  label: 'Fincas cafeteras',   emoji: '☕' },
-            ].map((stat, i) => (
-              <div key={i} style={{
-                background: '#FFFFFF',
-                borderRadius: '16px', padding: '28px 20px',
-                textAlign: 'center',
-                borderTop: '1.5px solid #E8E0D4',
-                borderRight: '1.5px solid #E8E0D4',
-                borderBottom: '1.5px solid #E8E0D4',
-                borderLeft: '4px solid #CAD74B',
-                boxShadow: '0 2px 12px rgba(28,35,22,0.05)',
-              }}>
-                <div style={{ fontSize: '28px', marginBottom: '8px' }}>{stat.emoji}</div>
-                <div style={{
-                  fontFamily: 'var(--font-playfair), Georgia, serif',
-                  fontSize: '32px', fontWeight: 800,
-                  color: '#1C2316', lineHeight: 1, marginBottom: '6px',
-                }}>
-                  {stat.valor}
-                </div>
-                <div style={{
-                  fontSize: '11px', color: 'rgba(28,35,22,0.45)',
-                  letterSpacing: '1.5px', textTransform: 'uppercase', fontWeight: 600,
-                }}>
-                  {stat.label}
+          <div
+            className="naturaleza-stats"
+            style={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              gap: '0',
+              marginTop: '80px',
+              padding: '8px 0',
+            }}
+          >
+            {stats.map((stat, i) => (
+              <div
+                key={i}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '40px',
+                }}
+              >
+                {i > 0 && (
+                  <div
+                    style={{
+                      width: '1px',
+                      height: '48px',
+                      background: 'rgba(var(--color-verde-oscuro-rgb), 0.15)',
+                    }}
+                  />
+                )}
+                <div
+                  style={{
+                    textAlign: 'center',
+                    padding: '0 40px',
+                    minWidth: '120px',
+                  }}
+                >
+                  <div
+                    style={{
+                      fontFamily: 'var(--font-titulo)',
+                      fontSize: 'clamp(32px, 4vw, 44px)',
+                      fontWeight: 800,
+                      color: 'var(--color-verde-oscuro)',
+                      lineHeight: 1,
+                      marginBottom: '6px',
+                    }}
+                  >
+                    {stat.valor}
+                  </div>
+                  <div
+                    style={{
+                      fontSize: '10.5px',
+                      color: 'rgba(var(--color-verde-oscuro-rgb), 0.5)',
+                      letterSpacing: '2.5px',
+                      textTransform: 'uppercase',
+                      fontWeight: 600,
+                    }}
+                  >
+                    {stat.label}
+                  </div>
                 </div>
               </div>
             ))}
@@ -273,14 +366,14 @@ export default function Naturaleza() {
       </div>
 
       <style>{`
-        @media (max-width: 900px) {
-          #naturaleza > div > div:nth-child(4) {
-            grid-template-columns: repeat(2, 1fr) !important;
+        @media (max-width: 720px) {
+          .naturaleza-stats {
+            flex-wrap: wrap !important;
+            gap: 16px 0 !important;
           }
-        }
-        @media (max-width: 600px) {
-          #naturaleza > div > div:nth-child(4) {
-            grid-template-columns: 1fr !important;
+          .naturaleza-stats > div > div {
+            padding: 0 20px !important;
+            min-width: 110px !important;
           }
         }
       `}</style>

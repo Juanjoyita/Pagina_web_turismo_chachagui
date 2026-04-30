@@ -10,7 +10,7 @@ export default function Aventura() {
       id="aventura"
       style={{
         padding: '100px 0',
-        background: '#1C2316',
+        background: 'var(--color-verde-oscuro)',
         backgroundImage:
           'linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px)',
         backgroundSize: '36px 36px',
@@ -21,27 +21,18 @@ export default function Aventura() {
         {/* Encabezado */}
         <AnimarAlEntrar direccion="arriba">
           <div style={{ textAlign: 'center', marginBottom: '64px' }}>
-            <div style={{
-              display: 'inline-flex', alignItems: 'center', gap: '8px',
-              background: 'rgba(250,181,17,0.12)', color: '#FAB511',
-              fontSize: '10px', fontWeight: 700, letterSpacing: '3px',
-              textTransform: 'uppercase', padding: '6px 18px',
-              borderRadius: '30px', marginBottom: '20px',
-            }}>
-              🚵 Sección 02
-            </div>
             <h2 style={{
-              fontFamily: 'var(--font-playfair), Georgia, serif',
+              fontFamily: 'var(--font-titulo)',
               fontSize: 'clamp(32px, 5vw, 56px)',
               fontWeight: 800, color: '#FFFFFF',
               letterSpacing: '-1.5px', lineHeight: 1.05,
               marginBottom: '20px',
             }}>
-              Deporte y <em style={{ fontStyle: 'italic', color: '#FAB511' }}>Aventura</em>
+              Deporte y <em style={{ fontStyle: 'italic', color: 'var(--color-verde-claro)' }}>Aventura</em>
             </h2>
             <div style={{
               width: '60px', height: '4px',
-              background: 'linear-gradient(90deg, #4A7C59, #FAB511)',
+              background: 'linear-gradient(90deg, var(--color-verde-claro), var(--color-verde-claro))',
               borderRadius: '2px', margin: '0 auto 20px',
             }} />
             <p style={{
@@ -70,6 +61,7 @@ export default function Aventura() {
                 descripcionCorta={item.descripcionCorta}
                 emoji={item.emoji}
                 tag={item.tag}
+                imagen={item.imagenes[0]}
             />
             </AnimarAlEntrar>
           ))}
@@ -83,7 +75,7 @@ export default function Aventura() {
             background: 'rgba(255,255,255,0.04)',
             borderRadius: '16px',
             overflow: 'hidden',
-            border: '1px solid rgba(250,181,17,0.15)',
+            border: '1px solid rgba(var(--color-verde-claro-rgb), 0.15)',
           }}>
             {[
               { valor: '6',           label: 'Actividades',      emoji: '🏃' },
@@ -100,8 +92,8 @@ export default function Aventura() {
                 <div style={{ fontSize: '24px', marginBottom: '8px' }}>{stat.emoji}</div>
                 <div style={{
                   fontSize: 'clamp(20px, 2.5vw, 28px)',
-                  fontWeight: 800, color: '#FAB511',
-                  fontFamily: 'var(--font-playfair), Georgia, serif',
+                  fontWeight: 800, color: 'var(--color-verde-claro)',
+                  fontFamily: 'var(--font-titulo)',
                   lineHeight: 1, marginBottom: '6px',
                 }}>
                   {stat.valor}

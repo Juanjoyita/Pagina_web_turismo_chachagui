@@ -1,6 +1,8 @@
 import type { Metadata } from 'next'
 import { Playfair_Display, Raleway } from 'next/font/google'
 import Navbar from '@/components/Navbar'
+import Footer from '@/components/Footer'
+import InfoTuristicaBtn from '@/components/InfoTuristicaBtn'
 import './globals.css'
 
 const playfair = Playfair_Display({
@@ -30,10 +32,12 @@ export default function RootLayout({
     <html lang="es">
     <body
     className={`${playfair.variable} ${raleway.variable}`}
-      style={{ fontFamily: 'var(--font-raleway), system-ui, sans-serif', background: '#FFF6E6', margin: 0 }}
+      style={{ fontFamily: 'var(--font-raleway), system-ui, sans-serif', background: 'var(--color-fondo)', margin: 0 }}
     >
         <Navbar />
         {children}
+        <Footer />
+        <InfoTuristicaBtn />
       </body>
     </html>
   )

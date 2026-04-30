@@ -25,7 +25,7 @@ export default function HistoriaPage() {
         </div>
 
         <h1 style={{
-          fontFamily: 'var(--font-playfair), Georgia, serif',
+          fontFamily: 'var(--font-titulo)',
           fontSize: 'clamp(28px, 4vw, 48px)', fontWeight: 800,
           color: '#1a4a2e', letterSpacing: '-1px', marginBottom: '12px',
         }}>
@@ -62,7 +62,7 @@ export default function HistoriaPage() {
                   </div>
                 )}
                 <h3 style={{
-                  fontFamily: 'var(--font-playfair), Georgia, serif',
+                  fontFamily: 'var(--font-titulo)',
                   fontSize: '18px', fontWeight: 700,
                   color: '#1a4a2e', margin: '12px 0 8px',
                 }}>

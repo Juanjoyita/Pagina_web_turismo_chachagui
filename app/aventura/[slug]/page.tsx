@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { aventura } from '@/data/aventura'
+import GaleriaNaturaleza from '@/components/GaleriaNaturaleza'
 
 export default async function DetalleAventura({
   params,
@@ -12,11 +13,11 @@ export default async function DetalleAventura({
   if (!item) notFound()
 
   return (
-    <main style={{ paddingTop: '64px', background: '#FFF6E6', minHeight: '100vh' }}>
+    <main style={{ paddingTop: '64px', background: 'var(--color-fondo)', minHeight: '100vh' }}>
 
       {/* Hero */}
       <div style={{
-        background: '#1C2316',
+        background: 'var(--color-verde-oscuro)',
         backgroundImage: 'linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px)',
         backgroundSize: '36px 36px',
         padding: '72px 0 80px',
@@ -25,7 +26,7 @@ export default async function DetalleAventura({
 
           <Link href="/#aventura" style={{
             display: 'inline-flex', alignItems: 'center', gap: '6px',
-            color: '#FAB511', fontSize: '13px', fontWeight: 600,
+            color: 'var(--color-verde-claro)', fontSize: '13px', fontWeight: 600,
             textDecoration: 'none', marginBottom: '32px', opacity: 0.85,
           }}>
             ← Volver a Aventura
@@ -33,9 +34,9 @@ export default async function DetalleAventura({
 
           <div style={{
             display: 'inline-flex', alignItems: 'center', gap: '8px',
-            background: 'rgba(250,181,17,0.12)',
-            border: '1px solid rgba(250,181,17,0.25)',
-            color: '#FAB511', fontSize: '10px', fontWeight: 700,
+            background: 'rgba(var(--color-verde-claro-rgb), 0.12)',
+            border: '1px solid rgba(var(--color-verde-claro-rgb), 0.25)',
+            color: 'var(--color-verde-claro)', fontSize: '10px', fontWeight: 700,
             letterSpacing: '3px', textTransform: 'uppercase',
             padding: '5px 14px', borderRadius: '30px',
             marginBottom: '20px',
@@ -44,7 +45,7 @@ export default async function DetalleAventura({
           </div>
 
           <h1 style={{
-            fontFamily: 'var(--font-playfair), Georgia, serif',
+            fontFamily: 'var(--font-titulo)',
             fontSize: 'clamp(28px, 4vw, 52px)',
             fontWeight: 800, color: '#FFFFFF',
             letterSpacing: '-1.5px', lineHeight: 1.1,
@@ -66,36 +67,19 @@ export default async function DetalleAventura({
       {/* Contenido */}
       <div style={{ maxWidth: '900px', margin: '0 auto', padding: '64px 40px' }}>
 
-        {/* Imagen */}
-        <div style={{
-          width: '100%', aspectRatio: '16/9',
-          background: 'linear-gradient(135deg, #4A7C59, #1C2316)',
-          borderRadius: '20px', marginBottom: '48px',
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          boxShadow: '0 16px 48px rgba(28,35,22,0.15)',
-          position: 'relative', overflow: 'hidden',
-        }}>
-          <div style={{
-            position: 'absolute', top: '-40px', right: '-40px',
-            width: '200px', height: '200px', borderRadius: '50%',
-            background: 'rgba(250,181,17,0.1)',
-          }} />
-          <div style={{ position: 'relative', zIndex: 1, textAlign: 'center' }}>
-            <div style={{ fontSize: '80px', marginBottom: '12px' }}>{item.emoji}</div>
-            <p style={{
-              color: 'rgba(255,255,255,0.35)', fontSize: '11px',
-              letterSpacing: '3px', textTransform: 'uppercase', fontWeight: 600,
-            }}>
-              Foto próximamente
-            </p>
-          </div>
-        </div>
+        {/* Galería de imágenes */}
+        <GaleriaNaturaleza
+          imagenes={item.imagenes}
+          nombre={item.actividad}
+          categoria="Aventura"
+          tipo={item.tag}
+        />
 
         {/* Descripción completa */}
         <div style={{ marginBottom: '52px' }}>
           {item.descripcionCompleta.split('\n\n').map((parrafo, i) => (
             <p key={i} style={{
-              fontSize: '16px', color: 'rgba(28,35,22,0.72)',
+              fontSize: '16px', color: 'rgba(var(--color-verde-oscuro-rgb), 0.72)',
               lineHeight: 1.9, fontWeight: 300, marginBottom: '20px',
             }}>
               {parrafo}
@@ -107,16 +91,16 @@ export default async function DetalleAventura({
         <div style={{
           background: '#FFFFFF', borderRadius: '16px',
           padding: '28px 32px', marginBottom: '52px',
-          borderTop: '1.5px solid #E8E0D4',
-          borderRight: '1.5px solid #E8E0D4',
-          borderBottom: '1.5px solid #E8E0D4',
-          borderLeft: '5px solid #4A7C59',
-          boxShadow: '0 4px 20px rgba(28,35,22,0.06)',
+          borderTop: '1.5px solid var(--color-borde)',
+          borderRight: '1.5px solid var(--color-borde)',
+          borderBottom: '1.5px solid var(--color-borde)',
+          borderLeft: '5px solid var(--color-verde-claro)',
+          boxShadow: '0 4px 20px rgba(var(--color-verde-oscuro-rgb), 0.06)',
         }}>
           <h3 style={{
-            fontFamily: 'var(--font-playfair), Georgia, serif',
+            fontFamily: 'var(--font-titulo)',
             fontSize: '18px', fontWeight: 700,
-            color: '#1C2316', margin: '0 0 20px',
+            color: 'var(--color-verde-oscuro)', margin: '0 0 20px',
           }}>
             Información práctica
           </h3>
@@ -133,11 +117,11 @@ export default async function DetalleAventura({
               <div key={info.label}>
                 <div style={{
                   fontSize: '9px', fontWeight: 700, letterSpacing: '2px',
-                  textTransform: 'uppercase', color: '#4A7C59', marginBottom: '6px',
+                  textTransform: 'uppercase', color: 'var(--color-verde-oscuro)', marginBottom: '6px',
                 }}>
                   {info.label}
                 </div>
-                <div style={{ fontSize: '15px', color: '#1C2316', fontWeight: 600 }}>
+                <div style={{ fontSize: '15px', color: 'var(--color-verde-oscuro)', fontWeight: 600 }}>
                   {info.valor}
                 </div>
               </div>
@@ -147,9 +131,9 @@ export default async function DetalleAventura({
 
         {/* Más actividades */}
         <h3 style={{
-          fontFamily: 'var(--font-playfair), Georgia, serif',
+          fontFamily: 'var(--font-titulo)',
           fontSize: '18px', fontWeight: 700,
-          color: '#1C2316', marginBottom: '16px',
+          color: 'var(--color-verde-oscuro)', marginBottom: '16px',
         }}>
           Más actividades
         </h3>
@@ -168,11 +152,11 @@ export default async function DetalleAventura({
                   display: 'flex', alignItems: 'center', gap: '10px',
                   padding: '12px 16px', borderRadius: '12px',
                   textDecoration: 'none',
-                  background: esActual ? '#1C2316' : '#FFFFFF',
-                  borderTop: '1.5px solid #E8E0D4',
-                  borderRight: '1.5px solid #E8E0D4',
-                  borderBottom: '1.5px solid #E8E0D4',
-                  borderLeft: `4px solid ${esActual ? '#FAB511' : '#4A7C59'}`,
+                  background: esActual ? 'var(--color-verde-oscuro)' : '#FFFFFF',
+                  borderTop: '1.5px solid var(--color-borde)',
+                  borderRight: '1.5px solid var(--color-borde)',
+                  borderBottom: '1.5px solid var(--color-borde)',
+                  borderLeft: `4px solid ${esActual ? 'var(--color-verde-claro)' : 'var(--color-verde-claro)'}`,
                   opacity: esActual ? 1 : 0.85,
                   transition: 'opacity 0.2s',
                 }}
@@ -180,7 +164,7 @@ export default async function DetalleAventura({
                 <span style={{ fontSize: '20px' }}>{a.emoji}</span>
                 <span style={{
                   fontSize: '12px', fontWeight: 600, lineHeight: 1.3,
-                  color: esActual ? '#FAB511' : '#1C2316',
+                  color: esActual ? 'var(--color-verde-claro)' : 'var(--color-verde-oscuro)',
                 }}>
                   {a.actividad}
                 </span>

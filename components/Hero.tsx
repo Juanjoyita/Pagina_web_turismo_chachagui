@@ -1,54 +1,96 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
+import { heroVideo, heroImagen } from '@/lib/imagenes'
 
-const slides = [
+type Slide = {
+  id: string
+  tipo: 'video' | 'imagen'
+  src: string
+  poster?: string
+  categoria: string
+  titulo: string
+  descripcion: string
+}
+
+const slides: Slide[] = [
   {
-    id: 'naturaleza',
-    imagen: 'https://images.unsplash.com/photo-1501854140801-50d01698950b?w=1600&q=80&fit=crop',
+    id: 'naturaleza-video',
+    tipo: 'video',
+    src: heroVideo(1).video,
+    poster: heroVideo(1).poster,
     categoria: 'Naturaleza y Paisajes',
     titulo: 'Cascadas y Montañas',
     descripcion: 'Paisajes de niebla y ríos cristalinos',
   },
   {
-    id: 'aventura',
-    imagen: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=1600&q=80&fit=crop',
+    id: 'aventura-imagen',
+    tipo: 'imagen',
+    src: heroImagen(1),
     categoria: 'Deporte y Aventura',
     titulo: 'Senderismo y Montañismo',
     descripcion: 'Rutas para todos los niveles',
   },
   {
-    id: 'gastronomia',
-    imagen: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=1600&q=80&fit=crop',
+    id: 'bosque-video',
+    tipo: 'video',
+    src: heroVideo(2).video,
+    poster: heroVideo(2).poster,
+    categoria: 'Bosque Andino',
+    titulo: 'Reservas y Biodiversidad',
+    descripcion: 'Ecosistemas únicos del sur de Colombia',
+  },
+  {
+    id: 'gastronomia-imagen',
+    tipo: 'imagen',
+    src: heroImagen(2),
     categoria: 'Gastronomía Local',
     titulo: 'Sabores Nariñenses',
     descripcion: 'Empanadas de añejo, cuy y mucho más',
   },
   {
-    id: 'festividades',
-    imagen: 'https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?w=1600&q=80&fit=crop',
-    categoria: 'Festividades',
-    titulo: 'Ferias y Celebraciones',
-    descripcion: 'Cultura viva en cada época del año',
-  },
-  {
-    id: 'rutas',
-    imagen: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1600&q=80&fit=crop',
+    id: 'rutas-imagen',
+    tipo: 'imagen',
+    src: heroImagen(3),
     categoria: 'Rutas Turísticas',
     titulo: 'Recorridos Recomendados',
     descripcion: 'Itinerarios de 1 y 2 días',
+  },
+  {
+    id: 'cultura-imagen',
+    tipo: 'imagen',
+    src: heroImagen(4),
+    categoria: 'Cultura y Tradición',
+    titulo: 'Ferias y Celebraciones',
+    descripcion: 'Cultura viva en cada época del año',
   },
 ]
 
 export default function Hero() {
   const [actual, setActual] = useState(0)
+  const videoRefs = useRef<(HTMLVideoElement | null)[]>([])
 
   useEffect(() => {
-    const timer = setInterval(() => {
+    // Para slides de imagen: 5.5s. Para slides de video: 8s.
+    const duracion = slides[actual].tipo === 'video' ? 8000 : 5500
+    const timer = setTimeout(() => {
       setActual((prev) => (prev + 1) % slides.length)
-    }, 5500)
-    return () => clearInterval(timer)
-  }, [])
+    }, duracion)
+    return () => clearTimeout(timer)
+  }, [actual])
+
+  // Reproducir el video del slide actual y pausar los demás
+  useEffect(() => {
+    videoRefs.current.forEach((v, i) => {
+      if (!v) return
+      if (i === actual) {
+        v.currentTime = 0
+        v.play().catch(() => {})
+      } else {
+        v.pause()
+      }
+    })
+  }, [actual])
 
   const anterior = () => setActual((prev) => (prev - 1 + slides.length) % slides.length)
   const siguiente = () => setActual((prev) => (prev + 1) % slides.length)
@@ -57,61 +99,67 @@ export default function Hero() {
     <section style={{
       position: 'relative',
       height: '100vh', minHeight: '600px',
-      display: 'flex', alignItems: 'center',
+      display: 'flex',
+      alignItems: 'flex-end',          // contenido alineado abajo
       overflow: 'hidden', marginTop: '64px',
+      paddingBottom: '180px',          // sube un poco el bloque de texto
     }}>
 
-      {/* Slides */}
+      {/* Slides (video o imagen) */}
       {slides.map((slide, i) => (
         <div
           key={slide.id}
           style={{
             position: 'absolute', inset: 0,
-            backgroundImage: `url(${slide.imagen})`,
-            backgroundSize: 'cover', backgroundPosition: 'center',
             opacity: i === actual ? 1 : 0,
             transition: 'opacity 1.4s ease',
             zIndex: i === actual ? 1 : 0,
           }}
-        />
+        >
+          {slide.tipo === 'video' ? (
+            <video
+              ref={(el) => { videoRefs.current[i] = el }}
+              src={slide.src}
+              poster={slide.poster}
+              muted
+              playsInline
+              loop
+              preload="metadata"
+              style={{
+                width: '100%', height: '100%',
+                objectFit: 'cover',
+                display: 'block',
+              }}
+            />
+          ) : (
+            <div
+              style={{
+                width: '100%', height: '100%',
+                backgroundImage: `url(${slide.src})`,
+                backgroundSize: 'cover', backgroundPosition: 'center',
+              }}
+            />
+          )}
+        </div>
       ))}
 
       {/* Overlay */}
       <div style={{
         position: 'absolute', inset: 0, zIndex: 2,
-        background: 'linear-gradient(to right, rgba(28,35,22,0.92) 0%, rgba(28,35,22,0.55) 50%, rgba(28,35,22,0.2) 80%), linear-gradient(to top, rgba(28,35,22,0.95), rgba(28,35,22,0.3))',
+        background: 'linear-gradient(to top, rgba(var(--color-verde-oscuro-rgb), 0.95) 0%, rgba(var(--color-verde-oscuro-rgb), 0.55) 55%, rgba(var(--color-verde-oscuro-rgb), 0.2) 100%)',
       }} />
 
-      {/* Info superior derecha */}
-      <div style={{
-        display: 'none',
-        position: 'absolute', top: '96px', right: '40px', zIndex: 3,
-        textAlign: 'right',
-      }}
-        className="md:block"
-      >
-        <span style={{ color: '#FAB511', fontSize: '11px', fontWeight: 700, letterSpacing: '2px' }}>
-          {slides[actual].categoria}
-        </span>
-        <div style={{ color: '#FFFFFF', fontWeight: 700, fontSize: '16px', marginTop: '4px' }}>
-          {slides[actual].titulo}
-        </div>
-        <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '12px', marginTop: '2px' }}>
-          {slides[actual].descripcion}
-        </div>
-      </div>
-
-      {/* Contenido principal */}
+      {/* Contenido principal (alineado abajo-izquierda) */}
       <div style={{
         position: 'relative', zIndex: 3,
-        padding: '0 24px', maxWidth: '860px',
+        padding: '0 40px', maxWidth: '900px',
         marginLeft: '0',
       }}>
         <div style={{
           display: 'inline-flex', alignItems: 'center', gap: '8px',
-          background: 'rgba(250,181,17,0.15)',
-          border: '1px solid rgba(250,181,17,0.35)',
-          color: '#FAB511', fontSize: '11px', fontWeight: 700,
+          background: 'rgba(var(--color-verde-claro-rgb), 0.15)',
+          border: '1px solid rgba(var(--color-verde-claro-rgb), 0.35)',
+          color: 'var(--color-verde-claro)', fontSize: '11px', fontWeight: 700,
           letterSpacing: '2.5px', textTransform: 'uppercase',
           padding: '7px 18px', borderRadius: '30px', marginBottom: '20px',
         }}>
@@ -119,19 +167,19 @@ export default function Hero() {
         </div>
 
         <h1 style={{
-          fontFamily: 'var(--font-playfair), Georgia, serif',
+          fontFamily: 'var(--font-titulo)',
           fontSize: 'clamp(34px, 8vw, 80px)',
           fontWeight: 800, color: '#FFFFFF',
           lineHeight: 1.05, margin: '0 0 16px',
           letterSpacing: '-2px',
         }}>
           Tierra de{' '}
-          <span style={{ color: '#FAB511' }}>Aventura,</span>
+          <span style={{ color: 'var(--color-verde-claro)' }}>Aventura,</span>
           <br />Cultura y Paisajes
         </h1>
 
         <p style={{
-          color: 'rgba(255,255,255,0.65)', fontSize: '16px',
+          color: 'rgba(255,255,255,0.75)', fontSize: '16px',
           maxWidth: '520px', lineHeight: 1.8,
           fontWeight: 300, margin: '0 0 28px',
         }}>
@@ -140,54 +188,24 @@ export default function Hero() {
         </p>
 
         <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
-          <a href="#naturaleza" style={{
-            background: '#FAB511',
-            color: '#1C2316', fontWeight: 800,
-            padding: '14px 32px', borderRadius: '50px',
-            textDecoration: 'none', fontSize: '14px',
-            boxShadow: '0 8px 28px rgba(250,181,17,0.4)',
-            transition: 'transform 0.2s, box-shadow 0.2s',
-          }}>
+          <a
+            href="#naturaleza"
+            className="hero-cta"
+            style={{
+              background: 'var(--color-verde-claro)',
+              color: 'var(--color-verde-oscuro)', fontWeight: 800,
+              padding: '14px 32px', borderRadius: '50px',
+              textDecoration: 'none', fontSize: '14px',
+              boxShadow: '0 8px 28px rgba(var(--color-verde-claro-rgb), 0.4)',
+              transition: 'transform 0.25s ease, box-shadow 0.3s ease, background 0.3s ease',
+              position: 'relative',
+              overflow: 'hidden',
+              display: 'inline-block',
+            }}
+          >
             Explorar Destino
           </a>
-          <a href="#aventura" style={{
-            border: '1.5px solid rgba(255,255,255,0.3)',
-            color: '#FFFFFF', fontWeight: 600,
-            padding: '14px 28px', borderRadius: '50px',
-            textDecoration: 'none', fontSize: '14px',
-          }}>
-            Ver rutas →
-          </a>
         </div>
-      </div>
-
-      {/* Stats abajo izquierda */}
-      <div style={{
-        position: 'absolute', bottom: '52px', left: '40px', zIndex: 3,
-        display: 'flex', alignItems: 'center', gap: '24px',
-      }}>
-        {[
-          { valor: '1.800m', label: 'Altitud' },
-          { valor: '18°C',   label: 'Clima' },
-          { valor: '7',      label: 'Categorías' },
-        ].map((stat, i) => (
-          <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '24px' }}>
-            {i > 0 && (
-              <div style={{ width: '1px', height: '36px', background: 'rgba(255,255,255,0.15)' }} />
-            )}
-            <div>
-              <div style={{ fontSize: '22px', fontWeight: 800, color: '#FAB511', lineHeight: 1 }}>
-                {stat.valor}
-              </div>
-              <div style={{
-                fontSize: '9px', color: 'rgba(255,255,255,0.4)',
-                letterSpacing: '2px', textTransform: 'uppercase', marginTop: '3px',
-              }}>
-                {stat.label}
-              </div>
-            </div>
-          </div>
-        ))}
       </div>
 
       {/* Controles abajo derecha */}
@@ -220,21 +238,54 @@ export default function Hero() {
         left: '50%', transform: 'translateX(-50%)',
         zIndex: 3, display: 'flex', gap: '8px',
       }}>
-        {slides.map((_, i) => (
+        {slides.map((slide, i) => (
           <button
             key={i}
             onClick={() => setActual(i)}
+            aria-label={`Ir al slide ${i + 1} (${slide.tipo})`}
             style={{
               width: i === actual ? '28px' : '8px',
               height: '8px',
               borderRadius: i === actual ? '4px' : '50%',
-              background: i === actual ? '#FAB511' : 'rgba(255,255,255,0.3)',
+              background: i === actual ? 'var(--color-verde-claro)' : 'rgba(255,255,255,0.3)',
               border: 'none', cursor: 'pointer',
               transition: 'all 0.35s', padding: 0,
             }}
           />
         ))}
       </div>
+
+      {/* Brillo + glow del CTA "Explorar Destino" */}
+      <style>{`
+        .hero-cta::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: -85%;
+          width: 60%;
+          height: 100%;
+          background: linear-gradient(
+            120deg,
+            transparent 0%,
+            rgba(255,255,255,0.55) 50%,
+            transparent 100%
+          );
+          transform: skewX(-20deg);
+          transition: left 0.7s ease;
+          pointer-events: none;
+        }
+        .hero-cta:hover {
+          transform: translateY(-2px);
+          background: var(--color-verde-claro-hover) !important;
+          box-shadow:
+            0 0 0 4px rgba(var(--color-verde-claro-rgb), 0.20),
+            0 10px 30px rgba(var(--color-verde-claro-rgb), 0.55),
+            0 0 36px rgba(var(--color-verde-claro-rgb), 0.65);
+        }
+        .hero-cta:hover::before {
+          left: 130%;
+        }
+      `}</style>
 
     </section>
   )

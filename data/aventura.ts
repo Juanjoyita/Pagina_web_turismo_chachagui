@@ -1,3 +1,5 @@
+import { imgPortada, imgGaleria } from '@/lib/imagenes'
+
 export const aventura = [
   {
     id: 'AVEN001',
@@ -9,7 +11,8 @@ export const aventura = [
     descripcionCompleta: 'El parapente en Chachagüí se vive desde el Cerro El Cundur, un punto natural privilegiado por su altura y condiciones geográficas, que permite disfrutar el vuelo en un entorno amplio y abierto.\n\nDesde allí, el territorio se despliega en una vista panorámica donde se observan el Aeropuerto Antonio Nariño, el valle de Pasizara y las veredas de Sánchez y Merlo, rodeadas por montañas que definen el paisaje del municipio.\n\nEn medio de estos cielos abiertos, la experiencia va más allá de la adrenalina: es una forma de contemplar el territorio desde otra perspectiva, donde la naturaleza, la vida rural y la historia se conectan en un solo recorrido visual.',
     emoji: '🪂',
     tag: 'Adrenalina',
-    imagen: '/images/aventura/AVEN001.jpg',
+    imagen: imgPortada('aventura', 'AVEN001'),
+    imagenes: imgGaleria('aventura', 'AVEN001'),
   },
   {
     id: 'AVEN002',
@@ -21,7 +24,8 @@ export const aventura = [
     descripcionCompleta: 'El ciclomontañismo en Chachagüí se desarrolla a través de una amplia red de vías rurales y caminos veredales que atraviesan el territorio, conectando sectores como Sánchez, Merlo, Pasizara y Casabuy.\n\nA lo largo del camino, el paisaje se transforma entre cultivos, fincas cafeteras y escenarios naturales que reflejan la vida campesina. Las variaciones del terreno, propias de su geografía montañosa, hacen de cada recorrido una experiencia dinámica.\n\nAlgunas rutas destacadas: Bosque El Común – Casa Quemada – Cerro El Cundur, Ruta Cimarrones – Pasizara – El Común, Ruta rural Chachagüí – Merlo.',
     emoji: '🚵',
     tag: 'Deporte',
-    imagen: '/images/aventura/AVEN002.jpg',
+    imagen: imgPortada('aventura', 'AVEN002'),
+    imagenes: imgGaleria('aventura', 'AVEN002'),
   },
   {
     id: 'AVEN003',
@@ -33,7 +37,8 @@ export const aventura = [
     descripcionCompleta: 'El senderismo en Chachagüí permite recorrer el territorio a través de caminos naturales y senderos ecológicos que conectan diferentes paisajes y escenarios rurales del municipio.\n\nSendero ecológico de Casabuy: un recorrido donde la naturaleza se combina con la historia ancestral del territorio. Aquí se pueden observar árboles nativos y petroglifos que evidencian la presencia de antiguas comunidades.\n\nSendero finca Leche y Miel: rodeado de pastizales, árboles dispersos y espacios productivos. A lo largo del recorrido es posible apreciar prácticas agrícolas y ganaderas en un entorno natural tranquilo.',
     emoji: '🥾',
     tag: 'Naturaleza',
-    imagen: '/images/aventura/AVEN003.jpg',
+    imagen: imgPortada('aventura', 'AVEN003'),
+    imagenes: imgGaleria('aventura', 'AVEN003'),
   },
   {
     id: 'AVEN004',
@@ -45,7 +50,8 @@ export const aventura = [
     descripcionCompleta: 'El recorrido hacia la Cascada La Diamantina permite adentrarse en un entorno natural donde el agua y la vegetación andina son protagonistas. A través de caminos rurales, el visitante llega a un espacio donde el sonido del agua y la frescura del ambiente generan una experiencia de tranquilidad.\n\nReconocida por la claridad de sus aguas, la Cascada La Diamantina se ha consolidado como uno de los principales atractivos naturales de Chachagüí, ideal para el descanso, la contemplación y el disfrute del territorio.',
     emoji: '💧',
     tag: 'Naturaleza',
-    imagen: '/images/aventura/AVEN004.jpg',
+    imagen: imgPortada('aventura', 'AVEN004'),
+    imagenes: imgGaleria('aventura', 'AVEN004'),
   },
   {
     id: 'AVEN005',
@@ -57,7 +63,8 @@ export const aventura = [
     descripcionCompleta: 'Explorar Chachagüí desde sus lugares más altos es adentrarse en paisajes que revelan la grandeza del territorio y permiten descubrir su esencia desde una perspectiva única.\n\nLugares como el Cerro El Cundur y sectores como Matarredonda se destacan por sus condiciones geográficas y por ofrecer espacios ideales para la contemplación. Desde estas alturas, es posible observar cómo el territorio se extiende entre cultivos, caminos y formaciones naturales.\n\nMás que una actividad, es una experiencia que invita a detenerse, observar y conectar con la inmensidad del paisaje.',
     emoji: '⛰️',
     tag: 'Aventura',
-    imagen: '/images/aventura/AVEN005.jpg',
+    imagen: imgPortada('aventura', 'AVEN005'),
+    imagenes: imgGaleria('aventura', 'AVEN005'),
   },
   {
     id: 'AVEN006',
@@ -69,6 +76,7 @@ export const aventura = [
     descripcionCompleta: 'El avistamiento de aves en Chachagüí es una experiencia que permite descubrir la riqueza natural de uno de los territorios más biodiversos del departamento de Nariño, una región que registra más de 1.000 especies de aves.\n\nChachagüí se posiciona como un destino ideal para el aviturismo. Se estima que en sus ecosistemas pueden encontrarse entre 150 y más de 300 especies, dependiendo del área y la temporada.\n\nEntre las especies más representativas se destacan el tucán esmeralda, el cuco ardilla (Piaya cayana) y el mosquero bermellón. Lugares como la Reserva El Común y Rosa de los Andes son escenarios clave para esta actividad.',
     emoji: '🦜',
     tag: 'Ecoturismo',
-    imagen: '/images/aventura/AVEN006.jpg',
+    imagen: imgPortada('aventura', 'AVEN006'),
+    imagenes: imgGaleria('aventura', 'AVEN006'),
   },
 ]
