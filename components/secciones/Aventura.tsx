@@ -11,9 +11,6 @@ export default function Aventura() {
       style={{
         padding: '100px 0',
         background: 'var(--color-verde-oscuro)',
-        backgroundImage:
-          'linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px)',
-        backgroundSize: '36px 36px',
       }}
     >
       <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '0 40px' }}>

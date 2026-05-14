@@ -11,44 +11,70 @@ interface Props {
   actividades: string
   ubicacion: string
   imagen: string
+  categoria: string
 }
 
-export default function CardNaturaleza({ slug, nombre, tipo, descripcion, actividades, ubicacion, imagen }: Props) {
+export default function CardNaturaleza({ slug, nombre, tipo, descripcion, actividades, ubicacion, imagen, categoria }: Props) {
   const [hover, setHover] = useState(false)
 
+  // El badge muestra la categoría directamente (Reserva, Cascada, Sendero, Mirador, Finca)
+  // con un label más descriptivo cuando aplica
   const tipoBadge: Record<string, string> = {
-    reserva: 'Reserva natural',
-    cascada: 'Cascada / Mirador',
-    sendero: 'Sendero',
-    finca:   'Finca cafetera',
+    Reserva: 'Reserva natural',
+    Cascada: 'Cascada',
+    Sendero: 'Sendero',
+    Mirador: 'Mirador',
+    Finca:   'Finca cafetera',
   }
 
   return (
-    <Link href={`/naturaleza/${slug}`} style={{ textDecoration: 'none', display: 'block', height: '100%' }}>
+    <Link href={`/naturaleza/${slug}`} style={{ textDecoration: 'none', display: 'flex', height: '100%' }}>
       <div
         onMouseEnter={() => setHover(true)}
         onMouseLeave={() => setHover(false)}
         style={{
+          position: 'relative',
           background: '#FFFFFF',
           borderRadius: '16px',
           overflow: 'hidden',
-          borderTop: `1.5px solid ${hover ? 'var(--color-verde-claro)' : '#E8E8E8'}`,
-          borderRight: `1.5px solid ${hover ? 'var(--color-verde-claro)' : '#E8E8E8'}`,
-          borderBottom: `1.5px solid ${hover ? 'var(--color-verde-claro)' : '#E8E8E8'}`,
-          borderLeft: `5px solid ${hover ? 'var(--color-verde-claro)' : 'var(--color-verde-oscuro)'}`,
-          transition: 'all 0.28s ease',
-          transform: hover ? 'translateY(-6px)' : 'translateY(0)',
-          boxShadow: hover ? '0 20px 48px rgba(var(--color-verde-oscuro-rgb), 0.12)' : '0 2px 12px rgba(var(--color-verde-oscuro-rgb), 0.05)',
+          clipPath: 'inset(0 round 16px)',
+          isolation: 'isolate',
+          willChange: 'transform',
+          border: `1.5px solid ${hover ? 'var(--color-verde-claro)' : 'rgba(var(--color-verde-oscuro-rgb), 0.12)'}`,
+          transition: 'transform 0.28s ease, box-shadow 0.28s ease, border-color 0.28s ease',
+          transform: hover ? 'translate3d(0, -6px, 0)' : 'translate3d(0, 0, 0)',
+          boxShadow: hover
+            ? '0 24px 48px rgba(var(--color-verde-oscuro-rgb), 0.20), 0 4px 12px rgba(var(--color-verde-oscuro-rgb), 0.08)'
+            : '0 8px 22px rgba(var(--color-verde-oscuro-rgb), 0.10), 0 2px 6px rgba(var(--color-verde-oscuro-rgb), 0.06)',
           cursor: 'pointer',
-          height: '100%',
+          width: '100%',
           display: 'flex', flexDirection: 'column',
+          WebkitBackfaceVisibility: 'hidden',
+          backfaceVisibility: 'hidden',
         }}
       >
+        {/* Franja vertical izquierda (acento) */}
+        <span
+          aria-hidden="true"
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            bottom: 0,
+            width: '5px',
+            background: hover ? 'var(--color-verde-claro)' : 'var(--color-verde-oscuro)',
+            transition: 'background 0.28s ease',
+            zIndex: 2,
+            pointerEvents: 'none',
+          }}
+        />
         {/* Imagen real */}
         <div style={{
           width: '100%', aspectRatio: '4/3',
           position: 'relative', overflow: 'hidden',
           background: 'var(--color-verde-oscuro)',
+          isolation: 'isolate',
+          transform: 'translateZ(0)',
         }}>
           <img
             src={imagen}
@@ -57,8 +83,9 @@ export default function CardNaturaleza({ slug, nombre, tipo, descripcion, activi
             style={{
               width: '100%', height: '100%',
               objectFit: 'cover', display: 'block',
-              transform: hover ? 'scale(1.08)' : 'scale(1)',
+              transform: hover ? 'scale3d(1.08, 1.08, 1)' : 'scale3d(1, 1, 1)',
               transition: 'transform 0.5s ease',
+              willChange: 'transform',
             }}
           />
           <span style={{
@@ -71,7 +98,7 @@ export default function CardNaturaleza({ slug, nombre, tipo, descripcion, activi
             transition: 'all 0.2s',
             backdropFilter: 'blur(4px)',
           }}>
-            {tipoBadge[tipo] || tipo}
+            {tipoBadge[categoria] || categoria}
           </span>
         </div>
 
@@ -107,7 +134,7 @@ export default function CardNaturaleza({ slug, nombre, tipo, descripcion, activi
           <div style={{
             display: 'flex', alignItems: 'center',
             justifyContent: 'space-between', marginTop: '4px',
-            paddingTop: '12px', borderTop: '1px solid var(--color-fondo)',
+            paddingTop: '12px', borderTop: '1px solid rgba(var(--color-verde-oscuro-rgb), 0.10)',
           }}>
             <span style={{
               fontSize: '11px', color: 'var(--color-verde-oscuro)',

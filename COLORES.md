@@ -16,26 +16,31 @@ Cuando cambias un color ahí, se actualiza automáticamente en toda la página.
 
 ### Los colores que puedes cambiar
 
-| Variable                    | Para qué se usa                                  | Valor actual |
-|-----------------------------|--------------------------------------------------|--------------|
-| `--color-verde-oscuro`      | Fondos oscuros, textos principales, encabezados  | `#1C2316`    |
-| `--color-verde-claro`       | Botones, líneas, badges, color de acento         | `#CAD74B`    |
-| `--color-verde-claro-hover` | Color del botón cuando pasas el cursor           | `#D8E25C`    |
-| `--color-fondo`             | Fondo gris suave de las secciones                | `#F1F1F1`    |
-| `--color-borde`             | Bordes beige de las tarjetas                     | `#E8E0D4`    |
-| `--color-crema`             | Texto claro sobre fondos oscuros                 | `#FFF6E6`    |
+| Variable                    | Nombre actual   | Para qué se usa                                  | Valor actual |
+|-----------------------------|-----------------|--------------------------------------------------|--------------|
+| `--color-verde-oscuro`      | Verde Oscuro    | Fondos oscuros, textos principales, encabezados  | `#1C2316`    |
+| `--color-verde-claro`       | Amarillo Mostaza| Botones, líneas, badges, color de acento         | `#FAB511`    |
+| `--color-verde-claro-hover` | Mostaza brillante | Color del botón cuando pasas el cursor         | `#FFC940`    |
+| `--color-fondo`             | Crema Claro     | Fondo principal de las secciones                 | `#FFF6E6`    |
+| `--color-borde`             | Crema Medio     | Bordes y separadores de tarjetas                 | `#ECE4D7`    |
+| `--color-blanco`            | Blanco          | Superficies / contenido                          | `#FFFFFF`    |
+| `--color-crema`             | Crema Claro     | Texto claro sobre fondos oscuros                 | `#FFF6E6`    |
+
+> **Nota:** la variable `--color-verde-claro` ahora contiene un **amarillo mostaza**.
+> El nombre de la variable se mantuvo por compatibilidad con todo el código del sitio,
+> pero su valor representa el color de acento actual de la marca.
 
 ### Cambiar un color — paso a paso
 
-**Ejemplo: cambiar el verde claro a azul**
+**Ejemplo: cambiar el amarillo mostaza a azul**
 
 1. Elige tu nuevo color. Por ejemplo, azul: `#3B82F6`
 2. Abre `app/globals.css`
 3. Busca:
 
 ```css
---color-verde-claro:        #CAD74B;
---color-verde-claro-rgb:    202, 215, 75;
+--color-verde-claro:        #FAB511;
+--color-verde-claro-rgb:    250, 181, 17;
 ```
 
 4. Reemplaza por:

@@ -24,10 +24,10 @@ export default function CardAventura({
   const [mostrarImagen, setMostrarImagen] = useState(false)
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
-  // Tras 450 ms de hover sostenido, revela la imagen
+  // Tras 250 ms de hover sostenido, revela la imagen y oculta el texto
   useEffect(() => {
     if (hover && imagen) {
-      timerRef.current = setTimeout(() => setMostrarImagen(true), 450)
+      timerRef.current = setTimeout(() => setMostrarImagen(true), 250)
     } else {
       if (timerRef.current) clearTimeout(timerRef.current)
       setMostrarImagen(false)
@@ -48,25 +48,26 @@ export default function CardAventura({
         style={{
           position: 'relative',
           background: hover ? 'rgba(var(--color-verde-claro-rgb), 0.06)' : 'rgba(255,255,255,0.04)',
-          borderTop: `1px solid ${hover ? 'rgba(var(--color-verde-claro-rgb), 0.3)' : 'rgba(255,255,255,0.08)'}`,
-          borderRight: `1px solid ${hover ? 'rgba(var(--color-verde-claro-rgb), 0.3)' : 'rgba(255,255,255,0.08)'}`,
+          borderTop:    `1px solid ${hover ? 'rgba(var(--color-verde-claro-rgb), 0.3)' : 'rgba(255,255,255,0.08)'}`,
+          borderRight:  `1px solid ${hover ? 'rgba(var(--color-verde-claro-rgb), 0.3)' : 'rgba(255,255,255,0.08)'}`,
           borderBottom: `1px solid ${hover ? 'rgba(var(--color-verde-claro-rgb), 0.3)' : 'rgba(255,255,255,0.08)'}`,
-          borderLeft: '4px solid var(--color-verde-claro)',
+          borderLeft:   '4px solid var(--color-verde-claro)',
           borderRadius: '16px',
           padding: '28px 24px',
           height: '100%',
+          minHeight: '260px',
           display: 'flex',
           flexDirection: 'column',
           gap: '12px',
           cursor: 'pointer',
-          transition: 'all 0.28s',
+          transition: 'all 0.28s ease',
           transform: hover ? 'translateY(-6px)' : 'translateY(0)',
           boxShadow: hover ? '0 20px 48px rgba(0,0,0,0.3)' : 'none',
           overflow: 'hidden',
           isolation: 'isolate',
         }}
       >
-        {/* Imagen de fondo revelada tras hover sostenido */}
+        {/* Imagen de fondo revelada en hover */}
         {imagen && (
           <>
             <div
@@ -79,73 +80,83 @@ export default function CardAventura({
                 backgroundPosition: 'center',
                 opacity: mostrarImagen ? 1 : 0,
                 transform: mostrarImagen ? 'scale(1)' : 'scale(1.08)',
-                transition: 'opacity 0.55s ease, transform 0.9s ease',
+                transition: 'opacity 0.45s ease, transform 0.9s ease',
                 zIndex: -2,
               }}
             />
+            {/* Velo oscuro suave para que el tag se siga leyendo encima de la foto */}
             <div
               aria-hidden="true"
               style={{
                 position: 'absolute',
                 inset: 0,
                 background:
-                  'linear-gradient(180deg, rgba(var(--color-verde-oscuro-rgb), 0.72) 0%, rgba(var(--color-verde-oscuro-rgb), 0.86) 60%, rgba(var(--color-verde-oscuro-rgb), 0.95) 100%)',
+                  'linear-gradient(180deg, rgba(var(--color-verde-oscuro-rgb), 0.10) 0%, rgba(var(--color-verde-oscuro-rgb), 0.40) 100%)',
                 opacity: mostrarImagen ? 1 : 0,
-                transition: 'opacity 0.55s ease',
+                transition: 'opacity 0.45s ease',
                 zIndex: -1,
               }}
             />
           </>
         )}
 
-        {/* Emoji + tag */}
+        {/* Encabezado: emoji + tag */}
         <div
           style={{
             display: 'flex',
-            alignItems: 'center',
+            alignItems: 'flex-start',
             justifyContent: 'space-between',
           }}
         >
+          {/* Emoji — se desvanece en hover */}
           <span
             style={{
               fontSize: '28px',
-              background: mostrarImagen
-                ? 'rgba(var(--color-verde-claro-rgb), 0.35)'
-                : 'rgba(var(--color-verde-claro-rgb), 0.2)',
+              background: 'rgba(var(--color-verde-claro-rgb), 0.2)',
               width: '56px',
               height: '56px',
               borderRadius: '14px',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              backdropFilter: mostrarImagen ? 'blur(6px)' : 'none',
-              transition: 'background 0.4s ease',
+              opacity: mostrarImagen ? 0 : 1,
+              transform: mostrarImagen ? 'scale(0.85)' : 'scale(1)',
+              transition: 'opacity 0.35s ease, transform 0.4s ease',
             }}
           >
             {emoji}
           </span>
+
+          {/* Tag — siempre visible, queda solo cuando aparece la imagen */}
           <span
             style={{
               background: mostrarImagen
-                ? 'rgba(var(--color-verde-oscuro-rgb), 0.55)'
+                ? 'var(--color-verde-claro)'
                 : 'rgba(var(--color-verde-claro-rgb), 0.12)',
-              color: 'var(--color-verde-claro)',
-              fontSize: '10px',
-              fontWeight: 700,
-              letterSpacing: '1.5px',
+              color: mostrarImagen
+                ? 'var(--color-verde-oscuro)'
+                : 'var(--color-verde-claro)',
+              fontSize: '11px',
+              fontWeight: 800,
+              letterSpacing: '2px',
               textTransform: 'uppercase',
-              padding: '4px 12px',
+              padding: '6px 14px',
               borderRadius: '20px',
-              border: '1px solid rgba(var(--color-verde-claro-rgb), 0.2)',
+              border: '1px solid rgba(var(--color-verde-claro-rgb), 0.35)',
+              boxShadow: mostrarImagen
+                ? '0 6px 18px rgba(var(--color-verde-claro-rgb), 0.45)'
+                : 'none',
               backdropFilter: mostrarImagen ? 'blur(6px)' : 'none',
-              transition: 'background 0.4s ease',
+              transition: 'all 0.4s ease',
+              alignSelf: 'flex-start',
+              flexShrink: 0,
             }}
           >
             {tag}
           </span>
         </div>
 
-        {/* Título */}
+        {/* Título — desaparece en hover */}
         <h3
           style={{
             fontFamily: 'var(--font-titulo)',
@@ -153,38 +164,40 @@ export default function CardAventura({
             fontWeight: 700,
             color: hover ? 'var(--color-verde-claro)' : '#FFFFFF',
             margin: 0,
-            transition: 'color 0.2s',
-            textShadow: mostrarImagen ? '0 2px 12px rgba(0,0,0,0.55)' : 'none',
+            opacity: mostrarImagen ? 0 : 1,
+            transform: mostrarImagen ? 'translateY(-6px)' : 'translateY(0)',
+            transition: 'opacity 0.3s ease, transform 0.4s ease, color 0.2s ease',
           }}
         >
           {actividad}
         </h3>
 
-        {/* Descripción */}
+        {/* Descripción — desaparece en hover */}
         <p
           style={{
             fontSize: '13px',
-            color: mostrarImagen
-              ? 'rgba(var(--color-crema-rgb), 0.85)'
-              : 'rgba(var(--color-crema-rgb), 0.5)',
+            color: 'rgba(var(--color-crema-rgb), 0.55)',
             lineHeight: 1.7,
             margin: 0,
             flex: 1,
             fontWeight: 300,
-            transition: 'color 0.4s ease',
-            textShadow: mostrarImagen ? '0 1px 6px rgba(0,0,0,0.55)' : 'none',
+            opacity: mostrarImagen ? 0 : 1,
+            transform: mostrarImagen ? 'translateY(-6px)' : 'translateY(0)',
+            transition: 'opacity 0.3s ease, transform 0.4s ease',
           }}
         >
           {descripcionCorta}
         </p>
 
-        {/* Ver más */}
+        {/* Pie "Ver más" — desaparece en hover */}
         <div
           style={{
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
             marginTop: '8px',
+            opacity: mostrarImagen ? 0 : 1,
+            transition: 'opacity 0.3s ease',
           }}
         >
           <span style={{ fontSize: '12px', color: 'var(--color-verde-claro)', fontWeight: 700 }}>
@@ -195,17 +208,14 @@ export default function CardAventura({
               width: '30px',
               height: '30px',
               borderRadius: '50%',
-              background: mostrarImagen
-                ? 'rgba(var(--color-verde-claro-rgb), 0.28)'
-                : 'rgba(var(--color-verde-claro-rgb), 0.12)',
+              background: 'rgba(var(--color-verde-claro-rgb), 0.12)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               fontSize: '14px',
               color: 'var(--color-verde-claro)',
-              transition: 'transform 0.25s, background 0.4s ease',
               transform: hover ? 'translateX(4px)' : 'translateX(0)',
-              backdropFilter: mostrarImagen ? 'blur(6px)' : 'none',
+              transition: 'transform 0.25s ease',
             }}
           >
             →

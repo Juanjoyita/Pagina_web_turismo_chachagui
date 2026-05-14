@@ -44,7 +44,7 @@ export default async function DetalleEvento({
       }}>
         <div style={{ maxWidth: '900px', margin: '0 auto', padding: '0 40px' }}>
 
-          <Link href="/#festividades" style={{
+          <Link href="/festividades" style={{
             display: 'inline-flex', alignItems: 'center', gap: '6px',
             color: 'var(--color-verde-claro)', fontSize: '13px', fontWeight: 600,
             textDecoration: 'none', marginBottom: '32px', opacity: 0.85,
