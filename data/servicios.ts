@@ -4,13 +4,13 @@ export const servicios = [
     slug: 'hospedaje',
     titulo: 'Hospedaje',
     descripcion:
-      'Posadas familiares y fincas campestres con todas las comodidades en plena naturaleza.',
+      'Prestadores turísticos del municipio: fincas, hoteles y posadas con servicios de hospedaje, café y experiencias rurales.',
     emoji: '🏡',
     items: [
-      'Posadas y hospedajes rurales',
-      'Fincas turísticas',
-      'Camping organizado',
-      'Cabaña de montaña',
+      'Finca Leche y Miel — naturaleza, café y agua',
+      'Matarredonda — reserva comunitaria con experiencia cafetera',
+      'Hotel Padua',
+      'La Gran Estancia',
     ],
   },
   {

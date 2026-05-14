@@ -57,7 +57,7 @@ export default async function DetalleNaturaleza({
 
         <div style={{ position: 'relative', maxWidth: '900px', margin: '0 auto', padding: '0 40px' }}>
 
-          <Link href="/#naturaleza" style={{
+          <Link href="/naturaleza" style={{
             display: 'inline-flex', alignItems: 'center', gap: '6px',
             color: 'var(--color-verde-claro)', fontSize: '13px', fontWeight: 600,
             textDecoration: 'none', marginBottom: '32px', opacity: 0.85,

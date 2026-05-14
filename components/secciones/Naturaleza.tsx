@@ -12,7 +12,10 @@ function CardNaturaleza({ item }: { item: typeof naturaleza[0] }) {
   const [hover, setHover] = useState(false)
 
   return (
-    <Link href={`/naturaleza/${item.slug}`} style={{ textDecoration: 'none', display: 'block' }}>
+    <Link
+      href={`/naturaleza/${item.slug}`}
+      style={{ textDecoration: 'none', display: 'flex', height: '100%' }}
+    >
       <div
         onMouseEnter={() => setHover(true)}
         onMouseLeave={() => setHover(false)}
@@ -29,6 +32,7 @@ function CardNaturaleza({ item }: { item: typeof naturaleza[0] }) {
           cursor: 'pointer',
           display: 'flex',
           flexDirection: 'column',
+          width: '100%',
         }}
       >
         {/* Imagen real de la card */}
@@ -119,8 +123,8 @@ function CardNaturaleza({ item }: { item: typeof naturaleza[0] }) {
               fontWeight: 300,
             }}
           >
-            {item.descripcion.length > 80
-              ? item.descripcion.slice(0, 80) + '…'
+            {item.descripcion.length > 120
+              ? item.descripcion.slice(0, 120) + '…'
               : item.descripcion}
           </p>
 
@@ -185,11 +189,17 @@ export default function Naturaleza() {
       ? naturaleza
       : naturaleza.filter((n) => n.categoria === catActiva)
 
+  // Stats calculados dinámicamente desde los datos reales
+  const totalLugares = naturaleza.length
+  const totalReservas = naturaleza.filter((n) => n.categoria === 'Reserva').length
+  const totalCascadas = naturaleza.filter((n) => n.categoria === 'Cascada').length
+  const totalSenderos = naturaleza.filter((n) => n.categoria === 'Sendero').length
+
   const stats = [
-    { valor: '12', label: 'Lugares' },
-    { valor: '4', label: 'Reservas' },
-    { valor: '2', label: 'Cascadas' },
-    { valor: '2', label: 'Fincas' },
+    { valor: String(totalLugares), label: 'Lugares' },
+    { valor: String(totalReservas), label: 'Reservas' },
+    { valor: String(totalCascadas), label: 'Cascadas' },
+    { valor: String(totalSenderos), label: 'Senderos' },
   ]
 
   return (
@@ -197,7 +207,7 @@ export default function Naturaleza() {
       id="naturaleza"
       style={{
         padding: '100px 0',
-        background: 'var(--color-fondo)',
+        background: 'var(--color-fondo-seccion)',
       }}
     >
       <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '0 40px' }}>
@@ -281,22 +291,28 @@ export default function Naturaleza() {
           </div>
         </AnimarAlEntrar>
 
-        {/* Grid */}
+        {/* Grid — align-items: stretch garantiza que cada celda ocupe el mismo alto */}
         <div
           style={{
             display: 'grid',
             gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))',
             gap: '24px',
+            alignItems: 'stretch',
           }}
         >
           {filtrados.map((item, i) => (
-            <AnimarAlEntrar key={item.id} direccion="arriba" delay={i * 60}>
+            <AnimarAlEntrar
+              key={item.id}
+              direccion="arriba"
+              delay={i * 60}
+              style={{ height: '100%' }}
+            >
               <CardNaturaleza item={item} />
             </AnimarAlEntrar>
           ))}
         </div>
 
-        {/* Stats strip — sin cajas, al estilo del hero */}
+        {/* Stats strip — calculados dinámicamente */}
         <AnimarAlEntrar direccion="arriba" delay={200}>
           <div
             className="naturaleza-stats"

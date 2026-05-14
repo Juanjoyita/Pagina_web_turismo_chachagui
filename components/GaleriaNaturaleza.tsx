@@ -9,18 +9,26 @@ interface Props {
   tipo: string
 }
 
+/**
+ * Carrusel auto-rotativo (cada 2 s) con click para abrir el lightbox ampliado.
+ * Reemplaza la galería de "1 portada + 4 miniaturas" por un solo visor grande.
+ */
 export default function GaleriaNaturaleza({ imagenes, nombre, categoria, tipo }: Props) {
-  const [abierto, setAbierto] = useState(false)
   const [indice, setIndice] = useState(0)
+  const [abierto, setAbierto] = useState(false)
+  const [enHover, setEnHover] = useState(false)
 
-  const portada = imagenes[0]
-  const secundarias = imagenes.slice(1)
+  /* ---------- Auto-rotación cada 2 s ---------- */
+  useEffect(() => {
+    if (imagenes.length <= 1) return
+    if (abierto || enHover) return // pausa si está ampliada o si el cursor está encima
+    const id = setInterval(() => {
+      setIndice((prev) => (prev + 1) % imagenes.length)
+    }, 2000)
+    return () => clearInterval(id)
+  }, [imagenes.length, abierto, enHover])
 
-  const abrir = (i: number) => {
-    setIndice(i)
-    setAbierto(true)
-  }
-
+  /* ---------- Navegación manual ---------- */
   const cerrar = useCallback(() => setAbierto(false), [])
   const anterior = useCallback(
     () => setIndice((p) => (p - 1 + imagenes.length) % imagenes.length),
@@ -31,7 +39,7 @@ export default function GaleriaNaturaleza({ imagenes, nombre, categoria, tipo }:
     [imagenes.length]
   )
 
-  // Teclado: Esc cierra, ← → navegan
+  /* ---------- Atajos de teclado dentro del lightbox ---------- */
   useEffect(() => {
     if (!abierto) return
     const onKey = (e: KeyboardEvent) => {
@@ -40,7 +48,6 @@ export default function GaleriaNaturaleza({ imagenes, nombre, categoria, tipo }:
       else if (e.key === 'ArrowRight') siguiente()
     }
     window.addEventListener('keydown', onKey)
-    // Bloquea el scroll del body mientras el lightbox está abierto
     const overflowAnterior = document.body.style.overflow
     document.body.style.overflow = 'hidden'
     return () => {
@@ -49,95 +56,203 @@ export default function GaleriaNaturaleza({ imagenes, nombre, categoria, tipo }:
     }
   }, [abierto, cerrar, anterior, siguiente])
 
+  if (imagenes.length === 0) return null
+
   return (
     <>
-      {/* Imagen principal grande */}
-      <button
-        type="button"
-        onClick={() => abrir(0)}
+      {/* ============================================================
+          CARRUSEL grande con cross-fade entre imágenes
+          ============================================================ */}
+      <div
+        onMouseEnter={() => setEnHover(true)}
+        onMouseLeave={() => setEnHover(false)}
         style={{
-          width: '100%', aspectRatio: '16/9',
-          borderRadius: '20px', marginBottom: '24px',
-          boxShadow: '0 16px 48px rgba(var(--color-verde-oscuro-rgb), 0.15)',
-          position: 'relative', overflow: 'hidden',
+          position: 'relative',
+          width: '100%',
+          aspectRatio: '16/10',
+          borderRadius: '20px',
+          overflow: 'hidden',
+          marginBottom: '52px',
           background: 'var(--color-verde-oscuro)',
-          border: 'none', padding: 0, cursor: 'zoom-in',
-          display: 'block',
+          boxShadow:
+            '0 24px 56px rgba(var(--color-verde-oscuro-rgb), 0.22), 0 0 0 1px var(--color-borde)',
         }}
-        aria-label={`Ver ${nombre} en pantalla completa`}
       >
-        <img
-          src={portada}
-          alt={nombre}
+        {/* Capas de imágenes con fade */}
+        {imagenes.map((img, i) => (
+          <button
+            key={i}
+            type="button"
+            onClick={() => setAbierto(true)}
+            aria-label={`Ver ${nombre} en pantalla completa (imagen ${i + 1} de ${imagenes.length})`}
+            style={{
+              position: 'absolute',
+              inset: 0,
+              border: 'none',
+              padding: 0,
+              background: 'transparent',
+              cursor: 'zoom-in',
+              opacity: i === indice ? 1 : 0,
+              transition: 'opacity 0.9s ease',
+              zIndex: i === indice ? 1 : 0,
+            }}
+          >
+            <img
+              src={img}
+              alt={`${nombre} (${i + 1}/${imagenes.length})`}
+              style={{
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover',
+                display: 'block',
+              }}
+            />
+          </button>
+        ))}
+
+        {/* Etiqueta categoría · tipo */}
+        <span
           style={{
-            width: '100%', height: '100%',
-            objectFit: 'cover', display: 'block',
-            transition: 'transform 0.4s ease',
+            position: 'absolute',
+            bottom: '20px',
+            left: '20px',
+            zIndex: 3,
+            background: 'rgba(var(--color-verde-oscuro-rgb), 0.85)',
+            color: '#FFFFFF',
+            fontSize: '11px',
+            fontWeight: 700,
+            letterSpacing: '2px',
+            textTransform: 'uppercase',
+            padding: '8px 16px',
+            borderRadius: '30px',
+            backdropFilter: 'blur(6px)',
+            pointerEvents: 'none',
           }}
-        />
-        <span style={{
-          position: 'absolute', bottom: '20px', left: '20px',
-          background: 'rgba(var(--color-verde-oscuro-rgb), 0.85)',
-          color: '#FFFFFF',
-          fontSize: '11px', fontWeight: 700,
-          letterSpacing: '2px', textTransform: 'uppercase',
-          padding: '8px 16px', borderRadius: '30px',
-          backdropFilter: 'blur(6px)',
-        }}>
-          {categoria} · {tipo}
+        >
+          {categoria}{tipo ? ` · ${tipo}` : ''}
         </span>
-        <span style={{
-          position: 'absolute', top: '16px', right: '16px',
-          background: 'rgba(var(--color-verde-oscuro-rgb), 0.75)',
-          color: '#FFFFFF',
-          fontSize: '11px', fontWeight: 600,
-          padding: '6px 12px', borderRadius: '20px',
-          backdropFilter: 'blur(6px)',
-          display: 'inline-flex', alignItems: 'center', gap: '6px',
-        }}>
+
+        {/* Indicador "Ampliar" */}
+        <span
+          style={{
+            position: 'absolute',
+            top: '16px',
+            right: '16px',
+            zIndex: 3,
+            background: 'rgba(var(--color-verde-oscuro-rgb), 0.75)',
+            color: '#FFFFFF',
+            fontSize: '11px',
+            fontWeight: 600,
+            padding: '6px 12px',
+            borderRadius: '20px',
+            backdropFilter: 'blur(6px)',
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '6px',
+            pointerEvents: 'none',
+          }}
+        >
           ⤢ Ampliar
         </span>
-      </button>
 
-      {/* Miniaturas secundarias */}
-      {secundarias.length > 0 && (
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: `repeat(${Math.min(secundarias.length, 3)}, 1fr)`,
-          gap: '14px',
-          marginBottom: '52px',
-        }}>
-          {secundarias.map((img, i) => (
+        {/* Botones anterior / siguiente */}
+        {imagenes.length > 1 && (
+          <>
             <button
-              key={i}
               type="button"
-              onClick={() => abrir(i + 1)}
+              onClick={anterior}
+              aria-label="Imagen anterior"
               style={{
-                aspectRatio: '4/3',
-                borderRadius: '14px',
-                overflow: 'hidden',
-                background: 'var(--color-verde-oscuro)',
-                boxShadow: '0 6px 20px rgba(var(--color-verde-oscuro-rgb), 0.10)',
-                border: 'none', padding: 0, cursor: 'zoom-in',
-                display: 'block', position: 'relative',
+                position: 'absolute',
+                left: '16px',
+                top: '50%',
+                transform: 'translateY(-50%)',
+                zIndex: 3,
+                width: '42px',
+                height: '42px',
+                borderRadius: '50%',
+                border: '1.5px solid rgba(255,255,255,0.35)',
+                background: 'rgba(var(--color-verde-oscuro-rgb), 0.55)',
+                color: '#FFFFFF',
+                fontSize: '18px',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                backdropFilter: 'blur(6px)',
               }}
-              aria-label={`Ver imagen ${i + 2} en pantalla completa`}
             >
-              <img
-                src={img}
-                alt={`${nombre} - imagen ${i + 2}`}
-                loading="lazy"
+              ←
+            </button>
+            <button
+              type="button"
+              onClick={siguiente}
+              aria-label="Imagen siguiente"
+              style={{
+                position: 'absolute',
+                right: '16px',
+                top: '50%',
+                transform: 'translateY(-50%)',
+                zIndex: 3,
+                width: '42px',
+                height: '42px',
+                borderRadius: '50%',
+                border: '1.5px solid rgba(255,255,255,0.35)',
+                background: 'rgba(var(--color-verde-oscuro-rgb), 0.55)',
+                color: '#FFFFFF',
+                fontSize: '18px',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                backdropFilter: 'blur(6px)',
+              }}
+            >
+              →
+            </button>
+          </>
+        )}
+
+        {/* Indicadores (puntos) */}
+        {imagenes.length > 1 && (
+          <div
+            style={{
+              position: 'absolute',
+              bottom: '20px',
+              right: '20px',
+              zIndex: 3,
+              display: 'flex',
+              gap: '6px',
+            }}
+          >
+            {imagenes.map((_, i) => (
+              <button
+                key={i}
+                type="button"
+                aria-label={`Ir a la imagen ${i + 1}`}
+                onClick={() => setIndice(i)}
                 style={{
-                  width: '100%', height: '100%',
-                  objectFit: 'cover', display: 'block',
+                  width: i === indice ? '24px' : '8px',
+                  height: '8px',
+                  borderRadius: '4px',
+                  border: 'none',
+                  padding: 0,
+                  cursor: 'pointer',
+                  background:
+                    i === indice
+                      ? 'var(--color-verde-claro)'
+                      : 'rgba(255,255,255,0.55)',
+                  transition: 'width 0.3s ease, background 0.3s ease',
                 }}
               />
-            </button>
-          ))}
-        </div>
-      )}
+            ))}
+          </div>
+        )}
+      </div>
 
-      {/* Lightbox */}
+      {/* ============================================================
+          LIGHTBOX (al hacer click en la imagen del carrusel)
+          ============================================================ */}
       {abierto && (
         <div
           onClick={cerrar}
@@ -145,20 +260,24 @@ export default function GaleriaNaturaleza({ imagenes, nombre, categoria, tipo }:
           aria-modal="true"
           aria-label={`Imagen ampliada de ${nombre}`}
           style={{
-            position: 'fixed', inset: 0, zIndex: 1000,
+            position: 'fixed',
+            inset: 0,
+            zIndex: 1000,
             background: 'rgba(10,12,8,0.92)',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
             padding: '60px 24px',
             animation: 'galeriaFadeIn 0.25s ease',
           }}
         >
-          {/* Imagen grande */}
           <img
             src={imagenes[indice]}
             alt={`${nombre} (${indice + 1}/${imagenes.length})`}
             onClick={(e) => e.stopPropagation()}
             style={{
-              maxWidth: '100%', maxHeight: '100%',
+              maxWidth: '100%',
+              maxHeight: '100%',
               objectFit: 'contain',
               borderRadius: '12px',
               boxShadow: '0 24px 60px rgba(0,0,0,0.5)',
@@ -166,26 +285,33 @@ export default function GaleriaNaturaleza({ imagenes, nombre, categoria, tipo }:
             }}
           />
 
-          {/* Cerrar */}
+          {/* Botón cerrar */}
           <button
             type="button"
             onClick={(e) => { e.stopPropagation(); cerrar() }}
             aria-label="Cerrar galería"
             style={{
-              position: 'absolute', top: '20px', right: '20px',
-              width: '44px', height: '44px', borderRadius: '50%',
+              position: 'absolute',
+              top: '20px',
+              right: '20px',
+              width: '44px',
+              height: '44px',
+              borderRadius: '50%',
               border: '1.5px solid rgba(255,255,255,0.25)',
               background: 'rgba(255,255,255,0.08)',
-              color: '#FFFFFF', fontSize: '18px',
-              cursor: 'pointer', display: 'flex',
-              alignItems: 'center', justifyContent: 'center',
+              color: '#FFFFFF',
+              fontSize: '18px',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
               backdropFilter: 'blur(6px)',
             }}
           >
             ✕
           </button>
 
-          {/* Anterior / Siguiente (si hay más de una) */}
+          {/* Anterior / Siguiente dentro del lightbox */}
           {imagenes.length > 1 && (
             <>
               <button
@@ -194,13 +320,20 @@ export default function GaleriaNaturaleza({ imagenes, nombre, categoria, tipo }:
                 aria-label="Imagen anterior"
                 style={{
                   position: 'absolute',
-                  left: '20px', top: '50%', transform: 'translateY(-50%)',
-                  width: '48px', height: '48px', borderRadius: '50%',
+                  left: '20px',
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  width: '48px',
+                  height: '48px',
+                  borderRadius: '50%',
                   border: '1.5px solid rgba(255,255,255,0.25)',
                   background: 'rgba(255,255,255,0.08)',
-                  color: '#FFFFFF', fontSize: '20px',
-                  cursor: 'pointer', display: 'flex',
-                  alignItems: 'center', justifyContent: 'center',
+                  color: '#FFFFFF',
+                  fontSize: '20px',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
                   backdropFilter: 'blur(6px)',
                 }}
               >
@@ -212,13 +345,20 @@ export default function GaleriaNaturaleza({ imagenes, nombre, categoria, tipo }:
                 aria-label="Imagen siguiente"
                 style={{
                   position: 'absolute',
-                  right: '20px', top: '50%', transform: 'translateY(-50%)',
-                  width: '48px', height: '48px', borderRadius: '50%',
+                  right: '20px',
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  width: '48px',
+                  height: '48px',
+                  borderRadius: '50%',
                   border: '1.5px solid rgba(255,255,255,0.25)',
                   background: 'rgba(255,255,255,0.08)',
-                  color: '#FFFFFF', fontSize: '20px',
-                  cursor: 'pointer', display: 'flex',
-                  alignItems: 'center', justifyContent: 'center',
+                  color: '#FFFFFF',
+                  fontSize: '20px',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
                   backdropFilter: 'blur(6px)',
                 }}
               >
@@ -228,16 +368,23 @@ export default function GaleriaNaturaleza({ imagenes, nombre, categoria, tipo }:
           )}
 
           {/* Contador */}
-          <div style={{
-            position: 'absolute', bottom: '24px', left: '50%',
-            transform: 'translateX(-50%)',
-            color: 'rgba(255,255,255,0.7)',
-            fontSize: '12px', fontWeight: 600,
-            letterSpacing: '2px', textTransform: 'uppercase',
-            background: 'rgba(255,255,255,0.06)',
-            padding: '6px 14px', borderRadius: '20px',
-            backdropFilter: 'blur(6px)',
-          }}>
+          <div
+            style={{
+              position: 'absolute',
+              bottom: '24px',
+              left: '50%',
+              transform: 'translateX(-50%)',
+              color: 'rgba(255,255,255,0.7)',
+              fontSize: '12px',
+              fontWeight: 600,
+              letterSpacing: '2px',
+              textTransform: 'uppercase',
+              background: 'rgba(255,255,255,0.06)',
+              padding: '6px 14px',
+              borderRadius: '20px',
+              backdropFilter: 'blur(6px)',
+            }}
+          >
             {indice + 1} / {imagenes.length}
           </div>
 
