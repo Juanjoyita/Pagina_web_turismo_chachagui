@@ -3,13 +3,17 @@ import { validateSession, upsertOverride } from '@/lib/db'
 import fs from 'fs'
 import path from 'path'
 
+// En App Router el límite de body se configura así (no con el objeto config de Pages)
+export const maxDuration = 60  // segundos máximos de ejecución
+export const dynamic = 'force-dynamic'
+
 function auth(req: NextRequest): boolean {
   return validateSession(req.cookies.get('admin_token')?.value ?? '')
 }
 
 const SECCIONES_VALIDAS = [
   'naturaleza', 'aventura', 'gastronomia',
-  'arte-cultura', 'festividades', 'hero',
+  'arte-cultura', 'festividades', 'hero', 'prestadores',
 ]
 
 export async function POST(req: NextRequest) {
@@ -18,9 +22,9 @@ export async function POST(req: NextRequest) {
   const formData = await req.formData().catch(() => null)
   if (!formData) return NextResponse.json({ error: 'FormData inválido' }, { status: 400 })
 
-  const file = formData.get('file') as File | null
+  const file    = formData.get('file')    as File   | null
   const seccion = formData.get('seccion') as string | null
-  const itemId = formData.get('item_id') as string | null
+  const itemId  = formData.get('item_id') as string | null
   const indiceStr = formData.get('indice') as string | null
 
   if (!file || !seccion || !itemId || indiceStr === null) {
@@ -32,8 +36,8 @@ export async function POST(req: NextRequest) {
   }
 
   const indice = Number(indiceStr)
-  if (isNaN(indice) || indice < 0 || indice > 4) {
-    return NextResponse.json({ error: 'Índice debe ser 0-4' }, { status: 400 })
+  if (isNaN(indice) || indice < 0 || indice > 10) {
+    return NextResponse.json({ error: 'Índice debe ser 0-10' }, { status: 400 })
   }
 
   // Generar nombre de archivo
@@ -41,7 +45,7 @@ export async function POST(req: NextRequest) {
   const sufijo = indice === 0 ? 'portada' : String(indice).padStart(2, '0')
   const nombreArchivo = `${itemId.toLowerCase()}-${sufijo}.${ext}`
 
-  // Directorio destino dentro de /public/imagenes/{seccion}/
+  // Directorio destino
   const dirDestino = path.resolve('./public/imagenes', seccion)
   if (!fs.existsSync(dirDestino)) {
     fs.mkdirSync(dirDestino, { recursive: true })
@@ -58,25 +62,13 @@ export async function POST(req: NextRequest) {
   // Registrar override en DB
   const override = upsertOverride(seccion, itemId, indice, urlPublica, 'local', file.name)
 
-  return NextResponse.json({
-    ok: true,
-    url: urlPublica,
-    override,
-  })
+  return NextResponse.json({ ok: true, url: urlPublica, override })
 }
 
 function getExtension(filename: string): string {
   const parts = filename.split('.')
   if (parts.length < 2) return 'jpg'
   const ext = parts[parts.length - 1].toLowerCase()
-  // Solo permitir imágenes
   if (['jpg', 'jpeg', 'png', 'webp', 'avif'].includes(ext)) return ext
   return 'jpg'
-}
-
-// Aumentar el límite de tamaño de body para archivos grandes
-export const config = {
-  api: {
-    bodyParser: false,
-  },
 }
