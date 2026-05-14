@@ -22,55 +22,24 @@ export default function Footer() {
         >
           {/* Columna 1: Logo + descripción */}
           <div>
-            <div
-              style={{
+            <div style={{ marginBottom: '20px' }}>
+              <div style={{
                 display: 'inline-flex',
-                alignItems: 'center',
-                gap: '10px',
-                marginBottom: '18px',
-              }}
-            >
-              <div
-                style={{
-                  width: '42px',
-                  height: '42px',
-                  borderRadius: '12px',
-                  background: 'var(--color-verde-claro)',
-                  color: 'var(--color-verde-oscuro)',
-                  fontWeight: 800,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  fontSize: '20px',
-                  fontFamily: 'var(--font-titulo)',
-                }}
-              >
-                C
-              </div>
-              <div>
-                <div
+                background: '#FFFFFF',
+                borderRadius: '12px',
+                padding: '10px 16px',
+                boxShadow: '0 4px 20px rgba(0,0,0,0.35)',
+              }}>
+                <img
+                  src="/imagenes/logo-alcaldia.png"
+                  alt="Alcaldía Municipal de Chachagüí"
                   style={{
-                    fontFamily: 'var(--font-titulo)',
-                    fontSize: '20px',
-                    fontWeight: 800,
-                    color: '#FFFFFF',
-                    lineHeight: 1,
+                    height: '60px',
+                    width: 'auto',
+                    display: 'block',
+                    objectFit: 'contain',
                   }}
-                >
-                  Chachagüí
-                </div>
-                <div
-                  style={{
-                    fontSize: '10px',
-                    color: 'var(--color-verde-claro)',
-                    letterSpacing: '2.5px',
-                    textTransform: 'uppercase',
-                    marginTop: '4px',
-                    fontWeight: 700,
-                  }}
-                >
-                  Turismo · Nariño
-                </div>
+                />
               </div>
             </div>
 

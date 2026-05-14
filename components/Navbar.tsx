@@ -60,7 +60,8 @@ const links = [
     sub: [
       { href: '/festividades/festival-de-cometas',   label: 'Festival de Cometas · Agosto' },
       { href: '/festividades/fiestas-virgen-de-fatima', label: 'Virgen de Fátima · Mayo' },
-      { href: '/festividades/feria-frutas-y-flores', label: 'Feria de Frutas y Flores · Enero' },
+      { href: '/festividades/carnaval-de-blancos-y-negros', label: 'Carnaval de Negros y Blancos · Enero' },
+      { href: '/festividades/semana-santa', label: 'Semana Santa · Marzo/Abril' },
     ],
   },
   {
@@ -68,10 +69,13 @@ const links = [
     label: 'Servicios',
     emoji: '🛎️',
     sub: [
-      { href: '/servicios/hospedaje',        label: 'Hospedaje' },
-      { href: '/servicios/guias-turisticos', label: 'Guías turísticos' },
-      { href: '/servicios/transporte',       label: 'Transporte' },
-      { href: '/servicios/restaurantes',     label: 'Restaurantes' },
+      { href: '/servicios/hotel-padua',               label: 'Hotel Padua' },
+      { href: '/servicios/finca-leche-y-miel',          label: 'Finca Leche y Miel' },
+      { href: '/servicios/las-palmas-campestre',         label: 'Las Palmas Campestre' },
+      { href: '/servicios/la-gran-estancia',             label: 'La Gran Estancia' },
+      { href: '/servicios/charmolan',                    label: 'Charmolán' },
+      { href: '/servicios/matarredonda',                 label: 'Matarredonda' },
+      { href: '/servicios/jardin-botanico-health-garden',label: 'Jardín Botánico Health Garden' },
     ],
   },
 ]
@@ -225,34 +229,32 @@ export default function Navbar() {
       {/* ── LOGO ── */}
       <Link
         href="/"
-        aria-label="Inicio — Chachagüí Turismo"
+        aria-label="Inicio — Alcaldía Municipal de Chachagüí"
+        onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
         style={{
-          display: 'flex', alignItems: 'center', gap: '10px',
+          display: 'flex', alignItems: 'center',
           textDecoration: 'none', flexShrink: 0,
         }}
       >
-        <span aria-hidden="true" style={{
-          width: '38px', height: '38px', background: 'var(--color-verde-claro)',
-          borderRadius: '50%', display: 'flex',
-          alignItems: 'center', justifyContent: 'center', fontSize: '18px',
-          boxShadow: '0 4px 14px rgba(var(--color-verde-claro-rgb), 0.4)',
+        <div style={{
+          background: '#FFFFFF',
+          borderRadius: '10px',
+          padding: '5px 12px',
+          display: 'flex', alignItems: 'center',
+          boxShadow: '0 2px 10px rgba(0,0,0,0.25)',
+          height: '46px',
         }}>
-          🌿
-        </span>
-        <span style={{ display: 'flex', flexDirection: 'column', lineHeight: 1.25 }}>
-          <strong style={{
-            color: '#FFFFFF', fontSize: '15px',
-            fontWeight: 700, letterSpacing: '-0.3px',
-          }}>
-            Chachagüí
-          </strong>
-          <small style={{
-            color: 'var(--color-fondo)', fontSize: '8.5px',
-            letterSpacing: '2.5px', textTransform: 'uppercase',
-          }}>
-            Nariño · Colombia
-          </small>
-        </span>
+          <img
+            src="/imagenes/logo-alcaldia.png"
+            alt="Alcaldía Municipal de Chachagüí"
+            style={{
+              height: '36px',
+              width: 'auto',
+              display: 'block',
+              objectFit: 'contain',
+            }}
+          />
+        </div>
       </Link>
 
       {/* ── LINKS ESCRITORIO ── */}

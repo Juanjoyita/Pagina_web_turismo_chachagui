@@ -6,12 +6,14 @@ interface Props {
   children: React.ReactNode
   direccion?: 'arriba' | 'izquierda' | 'derecha'
   delay?: number
+  style?: React.CSSProperties
 }
 
 export default function AnimarAlEntrar({
   children,
   direccion = 'arriba',
   delay = 0,
+  style,
 }: Props) {
   const ref = useRef<HTMLDivElement>(null)
   const [visible, setVisible] = useState(false)
@@ -44,6 +46,7 @@ export default function AnimarAlEntrar({
         transform: visible ? 'translate(0)' : transformInicial,
         transition: `opacity 0.75s ease, transform 0.75s cubic-bezier(0.22, 0.61, 0.36, 1)`,
         transitionDelay: `${delay}ms`,
+        ...style,
       }}
     >
       {children}

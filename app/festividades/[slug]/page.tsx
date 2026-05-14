@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { eventos } from '@/data/eventos'
 import GaleriaNaturaleza from '@/components/GaleriaNaturaleza'
+import { resolverGaleria } from '@/lib/imagenesServer'
 
 export async function generateStaticParams() {
   return eventos.map((e) => ({ slug: e.slug }))
@@ -32,19 +33,21 @@ export default async function DetalleEvento({
 
   const otros = eventos.filter((e) => e.slug !== slug)
 
+  // Imágenes con overrides del admin
+  const galeria = await resolverGaleria('festividades', item.id)
+
   return (
     <main style={{ paddingTop: '64px', background: 'var(--color-fondo)', minHeight: '100vh' }}>
 
       {/* Hero */}
       <div style={{
         background: 'var(--color-verde-oscuro)',
-        backgroundImage:
-          'radial-gradient(circle at 20% 30%, rgba(var(--color-verde-claro-rgb), 0.10) 0%, transparent 40%), radial-gradient(circle at 80% 70%, rgba(var(--color-verde-claro-rgb), 0.14) 0%, transparent 40%)',
+        backgroundImage: 'radial-gradient(circle at 20% 30%, rgba(var(--color-verde-claro-rgb), 0.10) 0%, transparent 40%), radial-gradient(circle at 80% 70%, rgba(var(--color-verde-claro-rgb), 0.14) 0%, transparent 40%)',
         padding: '72px 0 80px',
       }}>
         <div style={{ maxWidth: '900px', margin: '0 auto', padding: '0 40px' }}>
 
-          <Link href="/#festividades" style={{
+          <Link href="/festividades" style={{
             display: 'inline-flex', alignItems: 'center', gap: '6px',
             color: 'var(--color-verde-claro)', fontSize: '13px', fontWeight: 600,
             textDecoration: 'none', marginBottom: '32px', opacity: 0.85,
@@ -78,22 +81,19 @@ export default async function DetalleEvento({
           }}>
             {item.descripcion}
           </p>
-
         </div>
       </div>
 
       {/* Contenido */}
       <div style={{ maxWidth: '900px', margin: '0 auto', padding: '64px 40px' }}>
 
-        {/* Galería de imágenes */}
         <GaleriaNaturaleza
-          imagenes={item.imagenes}
+          imagenes={galeria}
           nombre={item.titulo}
           categoria="Festividad"
           tipo={item.fecha}
         />
 
-        {/* Descripción completa */}
         <div style={{ marginBottom: '52px' }}>
           {item.descripcionCompleta.split('\n\n').map((parrafo, i) => (
             <p key={i} style={{
@@ -128,9 +128,9 @@ export default async function DetalleEvento({
             gap: '20px',
           }}>
             {[
-              { label: 'Fecha',     valor: item.fechaCompleta },
-              { label: 'Lugar',     valor: item.lugar },
-              { label: 'Duración',  valor: item.duracion },
+              { label: 'Fecha',    valor: item.fechaCompleta },
+              { label: 'Lugar',    valor: item.lugar },
+              { label: 'Duración', valor: item.duracion },
             ].map((info) => (
               <div key={info.label}>
                 <div style={{
@@ -161,23 +161,18 @@ export default async function DetalleEvento({
           }}>
             Actividades destacadas
           </h3>
-          <ul style={{
-            listStyle: 'none', padding: 0, margin: 0,
-            display: 'flex', flexDirection: 'column', gap: '12px',
-          }}>
+          <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '12px' }}>
             {item.actividades.map((act) => (
               <li key={act} style={{
                 display: 'flex', alignItems: 'flex-start', gap: '12px',
                 fontSize: '14px', color: 'rgba(var(--color-verde-oscuro-rgb), 0.85)', lineHeight: 1.5,
               }}>
                 <span style={{
-                  width: '22px', height: '22px',
-                  borderRadius: '50%',
+                  width: '22px', height: '22px', borderRadius: '50%',
                   background: 'rgba(var(--color-verde-claro-rgb), 0.18)',
                   color: 'var(--color-verde-claro)',
                   display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-                  fontSize: '12px', fontWeight: 700,
-                  flexShrink: 0, marginTop: '1px',
+                  fontSize: '12px', fontWeight: 700, flexShrink: 0, marginTop: '1px',
                 }}>★</span>
                 <span>{act}</span>
               </li>

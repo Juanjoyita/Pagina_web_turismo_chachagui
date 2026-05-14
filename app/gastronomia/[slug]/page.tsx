@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { gastronomia } from '@/data/gastronomia'
 import GaleriaNaturaleza from '@/components/GaleriaNaturaleza'
+import { resolverGaleria } from '@/lib/imagenesServer'
 
 export async function generateStaticParams() {
   return gastronomia.map((g) => ({ slug: g.slug }))
@@ -32,14 +33,16 @@ export default async function DetalleGastronomia({
 
   const otros = gastronomia.filter((g) => g.slug !== slug).slice(0, 5)
 
+  // Imágenes con overrides del admin
+  const galeria = await resolverGaleria('gastronomia', item.id)
+
   return (
     <main style={{ paddingTop: '64px', background: 'var(--color-fondo)', minHeight: '100vh' }}>
 
       {/* Hero */}
       <div style={{
         background: 'var(--color-verde-oscuro)',
-        backgroundImage:
-          'radial-gradient(circle, rgba(var(--color-verde-claro-rgb), 0.12) 1.5px, transparent 1.5px)',
+        backgroundImage: 'radial-gradient(circle, rgba(var(--color-verde-claro-rgb), 0.12) 1.5px, transparent 1.5px)',
         backgroundSize: '28px 28px',
         padding: '72px 0 80px',
       }}>
@@ -79,22 +82,19 @@ export default async function DetalleGastronomia({
           }}>
             {item.descripcion}
           </p>
-
         </div>
       </div>
 
       {/* Contenido */}
       <div style={{ maxWidth: '900px', margin: '0 auto', padding: '64px 40px' }}>
 
-        {/* Galería de imágenes */}
         <GaleriaNaturaleza
-          imagenes={item.imagenes}
+          imagenes={galeria}
           nombre={item.nombre}
           categoria="Gastronomía"
           tipo={item.categoria}
         />
 
-        {/* Descripción completa */}
         <div style={{ marginBottom: '52px' }}>
           {item.descripcionCompleta.split('\n\n').map((parrafo, i) => (
             <p key={i} style={{
@@ -163,9 +163,7 @@ export default async function DetalleGastronomia({
           }}>
             Ingredientes principales
           </h3>
-          <div style={{
-            display: 'flex', flexWrap: 'wrap', gap: '8px',
-          }}>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
             {item.ingredientes.map((ing) => (
               <span key={ing} style={{
                 background: 'rgba(var(--color-verde-claro-rgb), 0.1)',

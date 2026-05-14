@@ -22,10 +22,7 @@ export default function Gastronomia() {
       style={{
         position: 'relative',
         padding: '120px 0 100px',
-        background: 'var(--color-fondo)',
-        backgroundImage:
-          'radial-gradient(circle, rgba(var(--color-verde-oscuro-rgb), 0.04) 1.5px, transparent 1.5px)',
-        backgroundSize: '28px 28px',
+        background: 'var(--color-fondo-seccion)',
       }}
     >
       <div style={{ maxWidth: '1180px', margin: '0 auto', padding: '0 40px' }}>
@@ -129,13 +126,14 @@ export default function Gastronomia() {
                     background: '#FFFFFF',
                     borderRadius: '14px',
                     padding: '18px 20px',
-                    borderTop: '1.5px solid var(--color-borde)',
-                    borderRight: '1.5px solid var(--color-borde)',
-                    borderBottom: '1.5px solid var(--color-borde)',
+                    borderTop: '1.5px solid rgba(var(--color-verde-oscuro-rgb), 0.12)',
+                    borderRight: '1.5px solid rgba(var(--color-verde-oscuro-rgb), 0.12)',
+                    borderBottom: '1.5px solid rgba(var(--color-verde-oscuro-rgb), 0.12)',
                     borderLeft: '5px solid var(--color-verde-claro)',
                     cursor: 'pointer',
                     transition: 'transform 0.25s ease, box-shadow 0.25s ease',
-                    boxShadow: '0 2px 10px rgba(var(--color-verde-oscuro-rgb), 0.05)',
+                    boxShadow:
+                      '0 8px 22px rgba(var(--color-verde-oscuro-rgb), 0.10), 0 2px 6px rgba(var(--color-verde-oscuro-rgb), 0.06)',
                   }}
                 >
                   <div

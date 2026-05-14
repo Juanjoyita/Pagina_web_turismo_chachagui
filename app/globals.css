@@ -16,37 +16,45 @@
    Conversor rápido:  https://www.rapidtables.com/convert/color/hex-to-rgb.html
    ========================================================================== */
 
-:root {
-  /* ---------- Color principal: VERDE OSCURO ----------
+@theme {
+  /* ---------- Color PRINCIPAL: VERDE OSCURO ----------
      Se usa en: fondos oscuros, textos principales, encabezados        */
   --color-verde-oscuro:     #1C2316;
   --color-verde-oscuro-rgb: 28, 35, 22;
 
-  /* ---------- Color de ACENTO: VERDE CLARO ----------
-     Se usa en: botones, líneas, detalles, badges, hover               */
-  --color-verde-claro:        #CAD74B;
-  --color-verde-claro-rgb:    202, 215, 75;
-  --color-verde-claro-hover:  #D8E25C;
+  /* ---------- Color de ACENTO: AMARILLO MOSTAZA ----------
+     Se usa en: botones, líneas, detalles, badges, hover.
+     Nota: la variable se sigue llamando "verde-claro" por compatibilidad
+     con todo el código del sitio, pero su VALOR ahora es amarillo mostaza. */
+  --color-verde-claro:        #FAB511;   /* Amarillo Mostaza */
+  --color-verde-claro-rgb:    250, 181, 17;
+  --color-verde-claro-hover:  #FFC940;   /* mostaza más brillante para hover */
 
   /* ---------- Neutros ---------- */
-  --color-fondo:     #F1F1F1;   /* fondo gris suave de las secciones    */
-  --color-borde:     #E8E0D4;   /* beige para bordes de tarjetas        */
-  --color-blanco:    #FFFFFF;
-  --color-crema:     #FFF6E6;   /* texto claro sobre fondos oscuros     */
-  --color-crema-rgb: 255, 246, 230;
+  --color-fondo:          #FFF6E6;   /* Crema Claro — fondo del body / página         */
+  --color-fondo-seccion:  #ECE4D7;   /* Crema Medio — fondo de secciones con tarjetas */
+  --color-borde:          #ECE4D7;   /* Crema Medio — bordes y separadores            */
+  --color-blanco:         #FFFFFF;   /* superficies / contenido                        */
+  --color-crema:          #FFF6E6;   /* texto claro sobre fondos oscuros               */
+  --color-crema-rgb:      255, 246, 230;
 
-  /* ---------- Aliases legados (compatibilidad con Tailwind v4) ----------
-     No los uses directamente — apuntan a los colores reales de arriba. */
+  /* ---------- Aliases legados (compatibilidad con código antiguo) ----------
+     No los uses directamente — apuntan a los colores reales de arriba.       */
   --color-oscuro:        var(--color-verde-oscuro);
   --color-gris-claro:    var(--color-fondo);
   --color-lima:          var(--color-verde-claro);
-  --color-lima-claro:    #d4e060;   /* legacy — valor exacto original */
+  --color-lima-claro:    var(--color-verde-claro-hover);
   --color-dorado:        var(--color-verde-claro);
-  --color-dorado-claro:  #d4e060;   /* legacy — valor exacto original */
+  --color-dorado-claro:  var(--color-verde-claro-hover);
   --color-verde:         var(--color-verde-oscuro);
   --color-gris:          #555555;
   --color-texto:         var(--color-verde-oscuro);
   --color-texto2:        #555555;
+
+  /* ---------- Aliases semánticos (recomendado para código nuevo) ---------- */
+  --color-acento:        var(--color-verde-claro);
+  --color-acento-rgb:    var(--color-verde-claro-rgb);
+  --color-acento-hover:  var(--color-verde-claro-hover);
 
   /* ==========================================================================
      TIPOGRAFÍA
@@ -56,18 +64,43 @@
        2. Cambia las fuentes que se importan de Google Fonts (líneas 2 y 8-19)
        3. (Opcional) Si renombras las variables, actualiza --font-titulo y
           --font-cuerpo de abajo para que apunten al nuevo nombre.
-
-     Para usar otra fuente en un componente puntual:
-       fontFamily: 'var(--font-cuerpo)'   ← cuerpo de texto (Raleway)
-       fontFamily: 'var(--font-titulo)'   ← títulos / encabezados (Playfair)
      ========================================================================== */
 
-  --font-titulo:  var(--font-playfair),  Georgia, serif;       /* H1, H2, H3, títulos */
-  --font-cuerpo:  var(--font-raleway),   system-ui, sans-serif; /* párrafos, listas, UI */
+  --font-titulo:  var(--font-playfair), Georgia, serif;        /* H1, H2, H3, títulos */
+  --font-cuerpo:  var(--font-raleway),  system-ui, sans-serif; /* párrafos, listas, UI */
 
   /* Aliases legados — no los uses directamente */
   --font-sans:    var(--font-cuerpo);
   --font-display: var(--font-titulo);
+}
+
+/* ==========================================================================
+   COPIA EXPLÍCITA EN :root
+   ==========================================================================
+   En algunas combinaciones de Next.js + Tailwind v4 las variables declaradas
+   solo dentro de @theme pueden no propagarse a inline styles `var(--…)` sin
+   un build limpio. Las repetimos aquí en :root como respaldo seguro.
+   Si cambias arriba, cambia también aquí.
+   ========================================================================== */
+
+:root {
+  --color-verde-oscuro:       #1C2316;
+  --color-verde-oscuro-rgb:   28, 35, 22;
+
+  --color-verde-claro:        #FAB511;
+  --color-verde-claro-rgb:    250, 181, 17;
+  --color-verde-claro-hover:  #FFC940;
+
+  --color-fondo:         #FFF6E6;
+  --color-fondo-seccion: #ECE4D7;
+  --color-borde:         #ECE4D7;
+  --color-blanco:        #FFFFFF;
+  --color-crema:         #FFF6E6;
+  --color-crema-rgb:     255, 246, 230;
+
+  --color-acento:       var(--color-verde-claro);
+  --color-acento-rgb:   var(--color-verde-claro-rgb);
+  --color-acento-hover: var(--color-verde-claro-hover);
 }
 
 /* ---------- Ajustes globales del navegador ---------- */

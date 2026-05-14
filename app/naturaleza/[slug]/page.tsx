@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { naturaleza } from '@/data/naturaleza'
 import GaleriaNaturaleza from '@/components/GaleriaNaturaleza'
+import { resolverGaleria } from '@/lib/imagenesServer'
 
 const coloresCat: Record<string, string> = {
   Reserva: 'var(--color-verde-claro)',
@@ -25,11 +26,9 @@ export default async function DetalleNaturaleza({
     .filter(n => n.categoria === item.categoria && n.slug !== slug)
     .slice(0, 3)
 
-  const galeria = item.imagenes && item.imagenes.length > 0
-    ? item.imagenes
-    : [item.imagen]
-
-  const portada = galeria[0]
+  // ← CLAVE: resolver imágenes desde la DB (incluye overrides del admin)
+  const galeria = await resolverGaleria('naturaleza', item.id)
+  const portada = galeria[0] || item.imagen
 
   return (
     <main style={{ paddingTop: '64px', background: 'var(--color-fondo)', minHeight: '100vh' }}>
@@ -41,7 +40,6 @@ export default async function DetalleNaturaleza({
         overflow: 'hidden',
         background: 'var(--color-verde-oscuro)',
       }}>
-        {/* Imagen de fondo del hero */}
         <div style={{
           position: 'absolute', inset: 0,
           backgroundImage: `url(${portada})`,
@@ -56,8 +54,7 @@ export default async function DetalleNaturaleza({
         }} />
 
         <div style={{ position: 'relative', maxWidth: '900px', margin: '0 auto', padding: '0 40px' }}>
-
-          <Link href="/#naturaleza" style={{
+          <Link href="/naturaleza" style={{
             display: 'inline-flex', alignItems: 'center', gap: '6px',
             color: 'var(--color-verde-claro)', fontSize: '13px', fontWeight: 600,
             textDecoration: 'none', marginBottom: '32px', opacity: 0.85,
@@ -91,7 +88,6 @@ export default async function DetalleNaturaleza({
           }}>
             {item.descripcion}
           </p>
-
         </div>
       </div>
 
@@ -195,10 +191,7 @@ export default async function DetalleNaturaleza({
                       src={rel.imagen}
                       alt={rel.nombre}
                       loading="lazy"
-                      style={{
-                        width: '100%', height: '100%',
-                        objectFit: 'cover', display: 'block',
-                      }}
+                      style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
                     />
                   </div>
                   <div style={{ padding: '14px 16px' }}>
@@ -214,7 +207,6 @@ export default async function DetalleNaturaleza({
             </div>
           </div>
         )}
-
       </div>
     </main>
   )

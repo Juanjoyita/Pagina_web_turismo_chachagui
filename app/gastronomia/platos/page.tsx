@@ -118,11 +118,12 @@ export default function PlatosPage() {
                 background: '#FFFFFF',
                 borderRadius: '18px',
                 overflow: 'hidden',
-                borderTop: '1.5px solid var(--color-borde)',
-                borderRight: '1.5px solid var(--color-borde)',
-                borderBottom: '1.5px solid var(--color-borde)',
+                borderTop: '1.5px solid rgba(var(--color-verde-oscuro-rgb), 0.12)',
+                borderRight: '1.5px solid rgba(var(--color-verde-oscuro-rgb), 0.12)',
+                borderBottom: '1.5px solid rgba(var(--color-verde-oscuro-rgb), 0.12)',
                 borderLeft: '5px solid var(--color-verde-claro)',
-                boxShadow: '0 4px 16px rgba(var(--color-verde-oscuro-rgb), 0.06)',
+                boxShadow:
+                  '0 10px 28px rgba(var(--color-verde-oscuro-rgb), 0.12), 0 2px 8px rgba(var(--color-verde-oscuro-rgb), 0.06)',
                 transition: 'transform 0.25s ease, box-shadow 0.25s ease',
               }}
             >
