@@ -1,9 +1,8 @@
 'use client'
 
-import { useState, useEffect, useRef, useCallback } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 
-// ── Catálogo completo del sitio ────────────────────────────
 const CATALOGO: Record<string, { label: string; emoji: string; items: { id: string; nombre: string }[] }> = {
   naturaleza: {
     label: 'Naturaleza', emoji: '🏞️',
@@ -40,7 +39,8 @@ const CATALOGO: Record<string, { label: string; emoji: string; items: { id: stri
       { id: 'GAS003', nombre: 'Heladería' },
       { id: 'GAS004', nombre: 'Empanadas de añejo' },
       { id: 'GAS005', nombre: 'El Cuy' },
-      { id: 'GAS006', nombre: 'Guiso de Maní' },
+      { id: 'GAS007', nombre: 'Buñuelos de Harina' },
+      { id: 'GAS008', nombre: 'Tacacho' },
     ],
   },
   'arte-cultura': {
@@ -63,18 +63,31 @@ const CATALOGO: Record<string, { label: string; emoji: string; items: { id: stri
     items: [
       { id: 'FES001', nombre: 'Festival de Cometas' },
       { id: 'FES002', nombre: 'Virgen de Fátima' },
-      { id: 'FES003', nombre: 'Feria Frutas y Flores' },
+      { id: 'FES003', nombre: 'Carnaval Negros y Blancos' },
+      { id: 'FES004', nombre: 'Semana Santa' },
+    ],
+  },
+  prestadores: {
+    label: 'Servicios', emoji: '🛎️',
+    items: [
+      { id: 'PRE001', nombre: 'Finca Leche y Miel' },
+      { id: 'PRE002', nombre: 'Las Palmas Campestre' },
+      { id: 'PRE003', nombre: 'Hotel Padua' },
+      { id: 'PRE004', nombre: 'La Gran Estancia' },
+      { id: 'PRE005', nombre: 'Charmolán' },
+      { id: 'PRE006', nombre: 'Matarredonda' },
+      { id: 'PRE007', nombre: 'Jardín Botánico Health Garden' },
     ],
   },
 }
 
-// ── Tipos ──────────────────────────────────────────────────
 interface FotoInfo {
   indice: number
   urlBase: string
   urlActual: string
   overrideId: number | null
   tieneOverride: boolean
+  visible: boolean
   nombreOrig: string | null
 }
 
@@ -84,6 +97,7 @@ interface Override {
   item_id: string
   indice: number
   url: string
+  visible: number
 }
 
 // ── Slot de foto individual ────────────────────────────────
@@ -94,6 +108,7 @@ function FotoSlot({
   itemId,
   onUploaded,
   onReset,
+  onToggleVisible,
 }: {
   foto: FotoInfo
   label: string
@@ -101,13 +116,14 @@ function FotoSlot({
   itemId: string
   onUploaded: (indice: number, newUrl: string, overrideId: number) => void
   onReset: (indice: number) => void
+  onToggleVisible: (indice: number, visible: boolean) => void
 }) {
   const [uploading, setUploading] = useState(false)
   const [dragOver, setDragOver] = useState(false)
   const [imgError, setImgError] = useState(false)
+  const [togglingVisible, setTogglingVisible] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
 
-  // Cuando cambia la URL, resetear error de imagen
   useEffect(() => { setImgError(false) }, [foto.urlActual])
 
   async function uploadFile(file: File) {
@@ -127,35 +143,54 @@ function FotoSlot({
     setUploading(false)
   }
 
+  async function toggleVisible() {
+    if (!foto.overrideId) return
+    setTogglingVisible(true)
+    const newVisible = !foto.visible
+    const res = await fetch(`/api/admin/imagenes/${foto.overrideId}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ visible: newVisible }),
+    })
+    if (res.ok) {
+      onToggleVisible(foto.indice, newVisible)
+    } else {
+      alert('Error al cambiar visibilidad')
+    }
+    setTogglingVisible(false)
+  }
+
   const tieneImagen = !imgError && !!foto.urlActual
+  const estaOculta = foto.tieneOverride && !foto.visible
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
 
-      {/* Cabecera del slot */}
-      <div style={{
-        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-        gap: '8px',
-      }}>
+      {/* Cabecera */}
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '6px', flexWrap: 'wrap' }}>
         <span style={{
           fontSize: '11px', fontWeight: 700, letterSpacing: '1.5px',
           textTransform: 'uppercase',
           color: foto.tieneOverride
-            ? 'var(--color-verde-oscuro)'
+            ? (estaOculta ? 'rgba(var(--color-verde-oscuro-rgb), 0.35)' : 'var(--color-verde-oscuro)')
             : 'rgba(var(--color-verde-oscuro-rgb), 0.45)',
         }}>
           {label}
         </span>
-        {foto.tieneOverride && (
-          <span style={{
-            background: 'rgba(var(--color-verde-claro-rgb), 0.18)',
-            color: 'var(--color-verde-oscuro)',
-            fontSize: '9px', fontWeight: 700, letterSpacing: '1px',
-            textTransform: 'uppercase', padding: '2px 8px', borderRadius: '10px',
-          }}>
-            ✓ personalizada
-          </span>
-        )}
+        <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
+          {foto.tieneOverride && (
+            <span style={{
+              background: estaOculta
+                ? 'rgba(229,62,62,0.1)'
+                : 'rgba(var(--color-verde-claro-rgb), 0.18)',
+              color: estaOculta ? '#e53e3e' : 'var(--color-verde-oscuro)',
+              fontSize: '9px', fontWeight: 700, letterSpacing: '1px',
+              textTransform: 'uppercase', padding: '2px 8px', borderRadius: '10px',
+            }}>
+              {estaOculta ? '● oculta' : '✓ personalizada'}
+            </span>
+          )}
+        </div>
       </div>
 
       {/* Zona de imagen + drop */}
@@ -176,6 +211,8 @@ function FotoSlot({
           border: `2px solid ${
             dragOver
               ? 'var(--color-verde-claro)'
+              : estaOculta
+              ? '#e53e3e44'
               : foto.tieneOverride
               ? 'var(--color-verde-claro)'
               : 'var(--color-borde)'
@@ -185,7 +222,7 @@ function FotoSlot({
           background: '#f5f5f5',
         }}
       >
-        {/* Foto actual (siempre visible si existe) */}
+        {/* Foto actual */}
         {tieneImagen && (
           <img
             src={foto.urlActual}
@@ -194,12 +231,32 @@ function FotoSlot({
             style={{
               width: '100%', height: '100%',
               objectFit: 'cover', display: 'block',
-              transition: 'transform 0.3s',
+              opacity: estaOculta ? 0.35 : 1,
+              filter: estaOculta ? 'grayscale(60%)' : 'none',
+              transition: 'opacity 0.3s, filter 0.3s',
             }}
           />
         )}
 
-        {/* Placeholder cuando no hay imagen o error */}
+        {/* Indicador de oculta encima de la imagen */}
+        {estaOculta && tieneImagen && (
+          <div style={{
+            position: 'absolute', inset: 0,
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            pointerEvents: 'none',
+          }}>
+            <div style={{
+              background: 'rgba(229,62,62,0.85)',
+              color: '#fff', fontSize: '11px', fontWeight: 700,
+              padding: '6px 14px', borderRadius: '20px',
+              letterSpacing: '1px', textTransform: 'uppercase',
+            }}>
+              🚫 No visible en el sitio
+            </div>
+          </div>
+        )}
+
+        {/* Placeholder sin imagen */}
         {!tieneImagen && !uploading && (
           <div style={{
             position: 'absolute', inset: 0,
@@ -218,7 +275,7 @@ function FotoSlot({
           </div>
         )}
 
-        {/* Overlay hover con "Cambiar foto" */}
+        {/* Overlay hover */}
         {tieneImagen && !uploading && (
           <div className="foto-overlay" style={{
             position: 'absolute', inset: 0,
@@ -260,8 +317,7 @@ function FotoSlot({
             position: 'absolute', inset: 0,
             background: 'rgba(255,255,255,0.85)',
             display: 'flex', flexDirection: 'column',
-            alignItems: 'center', justifyContent: 'center',
-            gap: '8px',
+            alignItems: 'center', justifyContent: 'center', gap: '8px',
           }}>
             <div style={{
               width: '32px', height: '32px', borderRadius: '50%',
@@ -284,7 +340,7 @@ function FotoSlot({
         />
       </div>
 
-      {/* Nombre original si fue subida */}
+      {/* Nombre original */}
       {foto.tieneOverride && foto.nombreOrig && (
         <div style={{
           fontSize: '11px', color: 'rgba(var(--color-verde-oscuro-rgb), 0.4)',
@@ -294,33 +350,60 @@ function FotoSlot({
         </div>
       )}
 
-      {/* Botón restaurar */}
+      {/* Acciones cuando hay override */}
       {foto.tieneOverride && (
-        <button
-          onClick={() => onReset(foto.indice)}
-          style={{
-            padding: '5px 12px',
-            border: '1px solid var(--color-borde)',
-            borderRadius: '8px',
-            background: 'transparent',
-            color: 'rgba(var(--color-verde-oscuro-rgb), 0.5)',
-            fontSize: '11px', cursor: 'pointer',
-            transition: 'all 0.15s',
-            alignSelf: 'flex-start',
-          }}
-          onMouseEnter={e => {
-            e.currentTarget.style.borderColor = '#e53e3e'
-            e.currentTarget.style.color = '#e53e3e'
-            e.currentTarget.style.background = 'rgba(229,62,62,0.06)'
-          }}
-          onMouseLeave={e => {
-            e.currentTarget.style.borderColor = 'var(--color-borde)'
-            e.currentTarget.style.color = 'rgba(var(--color-verde-oscuro-rgb), 0.5)'
-            e.currentTarget.style.background = 'transparent'
-          }}
-        >
-          ↩ Restaurar original
-        </button>
+        <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+
+          {/* Toggle visible / ocultar */}
+          <button
+            onClick={toggleVisible}
+            disabled={togglingVisible}
+            style={{
+              padding: '5px 12px',
+              border: `1px solid ${estaOculta ? '#38a169' : '#e53e3e'}`,
+              borderRadius: '8px',
+              background: estaOculta ? 'rgba(56,161,105,0.06)' : 'rgba(229,62,62,0.06)',
+              color: estaOculta ? '#38a169' : '#e53e3e',
+              fontSize: '11px', cursor: togglingVisible ? 'wait' : 'pointer',
+              transition: 'all 0.15s',
+              fontWeight: 600,
+              display: 'flex', alignItems: 'center', gap: '4px',
+            }}
+          >
+            {togglingVisible
+              ? '…'
+              : estaOculta
+              ? '👁 Mostrar en sitio'
+              : '🚫 Ocultar del sitio'
+            }
+          </button>
+
+          {/* Restaurar original */}
+          <button
+            onClick={() => onReset(foto.indice)}
+            style={{
+              padding: '5px 12px',
+              border: '1px solid var(--color-borde)',
+              borderRadius: '8px',
+              background: 'transparent',
+              color: 'rgba(var(--color-verde-oscuro-rgb), 0.5)',
+              fontSize: '11px', cursor: 'pointer',
+              transition: 'all 0.15s',
+            }}
+            onMouseEnter={e => {
+              e.currentTarget.style.borderColor = '#e53e3e'
+              e.currentTarget.style.color = '#e53e3e'
+              e.currentTarget.style.background = 'rgba(229,62,62,0.06)'
+            }}
+            onMouseLeave={e => {
+              e.currentTarget.style.borderColor = 'var(--color-borde)'
+              e.currentTarget.style.color = 'rgba(var(--color-verde-oscuro-rgb), 0.5)'
+              e.currentTarget.style.background = 'transparent'
+            }}
+          >
+            ↩ Restaurar original
+          </button>
+        </div>
       )}
     </div>
   )
@@ -336,7 +419,6 @@ export default function AdminPage() {
   const [cargandoFotos, setCargandoFotos] = useState(false)
   const [loggingOut, setLoggingOut] = useState(false)
 
-  // Cargar overrides de la sección (para los badges del listado)
   useEffect(() => {
     setItemActivo(null)
     fetch(`/api/admin/imagenes?seccion=${seccionActiva}`)
@@ -345,7 +427,6 @@ export default function AdminPage() {
       .catch(() => {})
   }, [seccionActiva])
 
-  // Cargar fotos del item seleccionado
   useEffect(() => {
     if (!itemActivo) { setFotosItem(null); return }
     setCargandoFotos(true)
@@ -357,35 +438,46 @@ export default function AdminPage() {
   }, [itemActivo, seccionActiva])
 
   function handleUploaded(indice: number, newUrl: string, overrideId: number) {
-    // Actualizar fotos del item activo
     setFotosItem(prev => prev
       ? prev.map(f => f.indice === indice
-          ? { ...f, urlActual: newUrl, tieneOverride: true, overrideId, nombreOrig: null }
+          ? { ...f, urlActual: newUrl, tieneOverride: true, overrideId, visible: true, nombreOrig: null }
           : f)
       : prev
     )
-    // Actualizar badge en el listado
     setOverridesSeccion(prev => {
       const filtered = prev.filter(o => !(o.item_id === itemActivo && o.indice === indice))
-      return [...filtered, { id: overrideId, seccion: seccionActiva, item_id: itemActivo!, indice, url: newUrl }]
+      return [...filtered, { id: overrideId, seccion: seccionActiva, item_id: itemActivo!, indice, url: newUrl, visible: 1 }]
     })
   }
 
   async function handleReset(indice: number) {
     const foto = fotosItem?.find(f => f.indice === indice)
     if (!foto?.overrideId) return
-    if (!confirm('¿Restaurar la imagen original para esta foto?')) return
+    if (!confirm('¿Restaurar la imagen original?')) return
 
     const res = await fetch(`/api/admin/imagenes/${foto.overrideId}`, { method: 'DELETE' })
     if (!res.ok) return
 
     setFotosItem(prev => prev
       ? prev.map(f => f.indice === indice
-          ? { ...f, urlActual: f.urlBase, tieneOverride: false, overrideId: null, nombreOrig: null }
+          ? { ...f, urlActual: f.urlBase, tieneOverride: false, overrideId: null, visible: true, nombreOrig: null }
           : f)
       : prev
     )
     setOverridesSeccion(prev => prev.filter(o => !(o.item_id === itemActivo && o.indice === indice)))
+  }
+
+  function handleToggleVisible(indice: number, visible: boolean) {
+    setFotosItem(prev => prev
+      ? prev.map(f => f.indice === indice ? { ...f, visible } : f)
+      : prev
+    )
+    setOverridesSeccion(prev =>
+      prev.map(o => (o.item_id === itemActivo && o.indice === indice)
+        ? { ...o, visible: visible ? 1 : 0 }
+        : o
+      )
+    )
   }
 
   async function logout() {
@@ -396,17 +488,17 @@ export default function AdminPage() {
 
   const items = CATALOGO[seccionActiva]?.items ?? []
   const itemNombre = items.find(i => i.id === itemActivo)?.nombre ?? ''
-  const fotosPersonalizadas = overridesSeccion.length
+  const fotosPersonalizadas = overridesSeccion.filter(o => o.seccion === seccionActiva).length
+  const fotasOcultas = overridesSeccion.filter(o => o.seccion === seccionActiva && o.visible === 0).length
 
   return (
     <div style={{ minHeight: '100vh', background: 'var(--color-fondo)' }}>
 
-      {/* ── HEADER ── */}
+      {/* HEADER */}
       <header style={{
         background: 'var(--color-verde-oscuro)',
         borderBottom: '1px solid rgba(var(--color-verde-claro-rgb), 0.2)',
-        padding: '0 28px',
-        height: '58px',
+        padding: '0 28px', height: '58px',
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
         position: 'sticky', top: 0, zIndex: 100,
       }}>
@@ -446,7 +538,7 @@ export default function AdminPage() {
 
       <div style={{ display: 'flex', minHeight: 'calc(100vh - 58px)' }}>
 
-        {/* ── SIDEBAR ── */}
+        {/* SIDEBAR */}
         <aside style={{
           width: '220px', flexShrink: 0,
           background: '#fff',
@@ -466,7 +558,9 @@ export default function AdminPage() {
           </div>
 
           {Object.entries(CATALOGO).map(([key, cat]) => {
-            const cnt = overridesSeccion.filter(o => o.seccion === key).length
+            const overridesDeEsta = overridesSeccion.filter(o => o.seccion === key)
+            const cnt = overridesDeEsta.length
+            const ocultas = overridesDeEsta.filter(o => o.visible === 0).length
             const activo = seccionActiva === key
             return (
               <button
@@ -486,16 +580,23 @@ export default function AdminPage() {
                 }}
               >
                 <span>{cat.emoji} {cat.label}</span>
-                {cnt > 0 && (
-                  <span style={{
-                    background: 'var(--color-verde-claro)',
-                    color: 'var(--color-verde-oscuro)',
-                    fontSize: '9px', fontWeight: 700,
-                    padding: '2px 6px', borderRadius: '8px', flexShrink: 0,
-                  }}>
-                    {cnt}
-                  </span>
-                )}
+                <div style={{ display: 'flex', gap: '4px', alignItems: 'center' }}>
+                  {ocultas > 0 && (
+                    <span style={{
+                      background: 'rgba(229,62,62,0.12)', color: '#e53e3e',
+                      fontSize: '9px', fontWeight: 700,
+                      padding: '2px 5px', borderRadius: '8px',
+                    }}>{ocultas}</span>
+                  )}
+                  {cnt > 0 && (
+                    <span style={{
+                      background: 'var(--color-verde-claro)',
+                      color: 'var(--color-verde-oscuro)',
+                      fontSize: '9px', fontWeight: 700,
+                      padding: '2px 6px', borderRadius: '8px',
+                    }}>{cnt}</span>
+                  )}
+                </div>
               </button>
             )
           })}
@@ -507,18 +608,18 @@ export default function AdminPage() {
             border: '1px solid rgba(var(--color-verde-claro-rgb), 0.18)',
           }}>
             <div style={{ fontSize: '11px', color: 'var(--color-verde-oscuro)', fontWeight: 700, marginBottom: '4px' }}>
-              💡 Uso
+              💡 Acciones
             </div>
             <div style={{ fontSize: '11px', color: 'rgba(var(--color-verde-oscuro-rgb), 0.55)', lineHeight: 1.5 }}>
-              Elige un elemento y haz clic o arrastra sobre la foto para reemplazarla.
+              Sube fotos arrastrando o haciendo clic. Usa <strong>Ocultar</strong> para quitar del sitio sin borrar.
             </div>
           </div>
         </aside>
 
-        {/* ── ÁREA PRINCIPAL ── */}
+        {/* ÁREA PRINCIPAL */}
         <main style={{ flex: 1, padding: '28px 32px', overflowY: 'auto', minWidth: 0 }}>
 
-          {/* ── LISTADO DE ITEMS ── */}
+          {/* LISTADO DE ITEMS */}
           {!itemActivo && (
             <>
               <div style={{ marginBottom: '24px' }}>
@@ -529,15 +630,16 @@ export default function AdminPage() {
                 }}>
                   {CATALOGO[seccionActiva]?.emoji} {CATALOGO[seccionActiva]?.label}
                 </h1>
-                <p style={{
-                  fontSize: '13px',
-                  color: 'rgba(var(--color-verde-oscuro-rgb), 0.5)',
-                  margin: 0,
-                }}>
+                <p style={{ fontSize: '13px', color: 'rgba(var(--color-verde-oscuro-rgb), 0.5)', margin: 0 }}>
                   Haz clic en un elemento para ver y editar sus fotos.
                   {fotosPersonalizadas > 0 && (
                     <span style={{ marginLeft: '6px', color: 'var(--color-verde-oscuro)', fontWeight: 600 }}>
-                      · {fotosPersonalizadas} foto{fotosPersonalizadas > 1 ? 's' : ''} personalizada{fotosPersonalizadas > 1 ? 's' : ''} en esta sección.
+                      · {fotosPersonalizadas} personalizada{fotosPersonalizadas > 1 ? 's' : ''}
+                    </span>
+                  )}
+                  {fotasOcultas > 0 && (
+                    <span style={{ marginLeft: '6px', color: '#e53e3e', fontWeight: 600 }}>
+                      · {fotasOcultas} oculta{fotasOcultas > 1 ? 's' : ''}
                     </span>
                   )}
                 </p>
@@ -549,19 +651,19 @@ export default function AdminPage() {
                 gap: '14px',
               }}>
                 {items.map(item => {
-                  const cnt = overridesSeccion.filter(o => o.item_id === item.id).length
+                  const overridesItem = overridesSeccion.filter(o => o.item_id === item.id)
+                  const cnt = overridesItem.length
+                  const ocultas = overridesItem.filter(o => o.visible === 0).length
                   return (
                     <button
                       key={item.id}
                       onClick={() => setItemActivo(item.id)}
                       style={{
                         textAlign: 'left', padding: '18px',
-                        background: '#fff',
-                        borderRadius: '14px',
+                        background: '#fff', borderRadius: '14px',
                         border: `1.5px solid ${cnt > 0 ? 'var(--color-verde-claro)' : 'var(--color-borde)'}`,
-                        borderLeft: `5px solid ${cnt > 0 ? 'var(--color-verde-claro)' : 'var(--color-borde)'}`,
-                        cursor: 'pointer',
-                        transition: 'all 0.2s',
+                        borderLeft: `5px solid ${ocultas > 0 ? '#e53e3e' : cnt > 0 ? 'var(--color-verde-claro)' : 'var(--color-borde)'}`,
+                        cursor: 'pointer', transition: 'all 0.2s',
                         boxShadow: '0 1px 6px rgba(var(--color-verde-oscuro-rgb), 0.05)',
                       }}
                       onMouseEnter={e => {
@@ -576,8 +678,7 @@ export default function AdminPage() {
                       <div style={{
                         fontSize: '9px', fontWeight: 700, letterSpacing: '1.5px',
                         textTransform: 'uppercase',
-                        color: 'rgba(var(--color-verde-oscuro-rgb), 0.3)',
-                        marginBottom: '4px',
+                        color: 'rgba(var(--color-verde-oscuro-rgb), 0.3)', marginBottom: '4px',
                       }}>
                         {item.id}
                       </div>
@@ -589,18 +690,30 @@ export default function AdminPage() {
                       }}>
                         {item.nombre}
                       </div>
-                      <div style={{
-                        display: 'flex', alignItems: 'center',
-                        justifyContent: 'space-between', gap: '8px',
-                      }}>
-                        <span style={{
-                          fontSize: '11px', fontWeight: 600,
-                          color: cnt > 0
-                            ? 'var(--color-verde-oscuro)'
-                            : 'rgba(var(--color-verde-oscuro-rgb), 0.35)',
-                        }}>
-                          {cnt > 0 ? `${cnt} personalizada${cnt > 1 ? 's' : ''}` : '5 originales'}
-                        </span>
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px' }}>
+                        <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
+                          {cnt > 0 ? (
+                            <span style={{
+                              fontSize: '11px', fontWeight: 600,
+                              color: 'var(--color-verde-oscuro)',
+                            }}>
+                              {cnt} foto{cnt > 1 ? 's' : ''}
+                            </span>
+                          ) : (
+                            <span style={{ fontSize: '11px', fontWeight: 600, color: 'rgba(var(--color-verde-oscuro-rgb), 0.35)' }}>
+                              originales
+                            </span>
+                          )}
+                          {ocultas > 0 && (
+                            <span style={{
+                              background: 'rgba(229,62,62,0.1)', color: '#e53e3e',
+                              fontSize: '10px', fontWeight: 700,
+                              padding: '1px 6px', borderRadius: '8px',
+                            }}>
+                              {ocultas} oculta{ocultas > 1 ? 's' : ''}
+                            </span>
+                          )}
+                        </div>
                         <span style={{ fontSize: '13px', color: 'rgba(var(--color-verde-oscuro-rgb), 0.4)' }}>→</span>
                       </div>
                     </button>
@@ -610,7 +723,7 @@ export default function AdminPage() {
             </>
           )}
 
-          {/* ── EDITOR DE FOTOS ── */}
+          {/* EDITOR DE FOTOS */}
           {itemActivo && (
             <>
               {/* Breadcrumb */}
@@ -627,10 +740,7 @@ export default function AdminPage() {
                 >
                   ← Volver
                 </button>
-                <div style={{
-                  height: '20px', width: '1px',
-                  background: 'var(--color-borde)',
-                }} />
+                <div style={{ height: '20px', width: '1px', background: 'var(--color-borde)' }} />
                 <div>
                   <span style={{
                     fontSize: '10px', fontWeight: 700, letterSpacing: '1.5px',
@@ -654,8 +764,7 @@ export default function AdminPage() {
                 <div style={{
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   padding: '80px 0', gap: '12px',
-                  color: 'rgba(var(--color-verde-oscuro-rgb), 0.4)',
-                  fontSize: '14px',
+                  color: 'rgba(var(--color-verde-oscuro-rgb), 0.4)', fontSize: '14px',
                 }}>
                   <div style={{
                     width: '24px', height: '24px', borderRadius: '50%',
@@ -684,11 +793,8 @@ export default function AdminPage() {
                       }}>
                         Foto de portada
                       </h3>
-                      <span style={{
-                        fontSize: '11px', color: 'rgba(var(--color-verde-oscuro-rgb), 0.45)',
-                        fontWeight: 400,
-                      }}>
-                        Aparece en tarjetas, carruseles y encabezados
+                      <span style={{ fontSize: '11px', color: 'rgba(var(--color-verde-oscuro-rgb), 0.45)', fontWeight: 400 }}>
+                        Aparece en tarjetas y encabezados del sitio
                       </span>
                     </div>
                     <div style={{ maxWidth: '520px' }}>
@@ -699,51 +805,52 @@ export default function AdminPage() {
                         itemId={itemActivo}
                         onUploaded={handleUploaded}
                         onReset={handleReset}
+                        onToggleVisible={handleToggleVisible}
                       />
                     </div>
                   </div>
 
                   {/* GALERÍA */}
-                  <div>
-                    <div style={{
-                      display: 'flex', alignItems: 'center', gap: '10px',
-                      marginBottom: '16px', paddingBottom: '10px',
-                      borderBottom: '2px solid rgba(var(--color-verde-claro-rgb), 0.35)',
-                    }}>
-                      <h3 style={{
-                        fontFamily: 'var(--font-titulo)',
-                        fontSize: '15px', fontWeight: 700,
-                        color: 'var(--color-verde-oscuro)', margin: 0,
+                  {fotosItem.length > 1 && (
+                    <div>
+                      <div style={{
+                        display: 'flex', alignItems: 'center', gap: '10px',
+                        marginBottom: '16px', paddingBottom: '10px',
+                        borderBottom: '2px solid rgba(var(--color-verde-claro-rgb), 0.35)',
                       }}>
-                        Galería
-                      </h3>
-                      <span style={{
-                        fontSize: '11px', color: 'rgba(var(--color-verde-oscuro-rgb), 0.45)',
-                        fontWeight: 400,
+                        <h3 style={{
+                          fontFamily: 'var(--font-titulo)',
+                          fontSize: '15px', fontWeight: 700,
+                          color: 'var(--color-verde-oscuro)', margin: 0,
+                        }}>
+                          Galería
+                        </h3>
+                        <span style={{ fontSize: '11px', color: 'rgba(var(--color-verde-oscuro-rgb), 0.45)', fontWeight: 400 }}>
+                          Aparecen en la página de detalle con lightbox
+                        </span>
+                      </div>
+                      <div style={{
+                        display: 'grid',
+                        gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
+                        gap: '20px',
                       }}>
-                        Aparecen en la página de detalle con lightbox
-                      </span>
+                        {fotosItem.slice(1).map(foto => (
+                          <FotoSlot
+                            key={foto.indice}
+                            foto={foto}
+                            label={`Galería ${foto.indice}`}
+                            seccion={seccionActiva}
+                            itemId={itemActivo}
+                            onUploaded={handleUploaded}
+                            onReset={handleReset}
+                            onToggleVisible={handleToggleVisible}
+                          />
+                        ))}
+                      </div>
                     </div>
-                    <div style={{
-                      display: 'grid',
-                      gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
-                      gap: '20px',
-                    }}>
-                      {fotosItem.slice(1).map(foto => (
-                        <FotoSlot
-                          key={foto.indice}
-                          foto={foto}
-                          label={`Galería ${foto.indice}`}
-                          seccion={seccionActiva}
-                          itemId={itemActivo}
-                          onUploaded={handleUploaded}
-                          onReset={handleReset}
-                        />
-                      ))}
-                    </div>
-                  </div>
+                  )}
 
-                  {/* Nota informativa */}
+                  {/* Nota */}
                   <div style={{
                     marginTop: '28px', padding: '14px 18px',
                     background: 'rgba(var(--color-verde-claro-rgb), 0.08)',
@@ -753,14 +860,12 @@ export default function AdminPage() {
                     color: 'rgba(var(--color-verde-oscuro-rgb), 0.6)',
                     lineHeight: 1.6,
                   }}>
-                    <strong style={{ color: 'var(--color-verde-oscuro)' }}>💡 Formatos aceptados:</strong>{' '}
+                    <strong style={{ color: 'var(--color-verde-oscuro)' }}>💡 Formatos:</strong>{' '}
                     JPG, PNG, WebP, AVIF.{' '}
-                    Las fotos se guardan en{' '}
-                    <code style={{ background: '#fff', padding: '1px 5px', borderRadius: '4px', fontSize: '11px' }}>
-                      public/imagenes/{seccionActiva}/
-                    </code>{' '}
-                    y se muestran de inmediato en el sitio.
-                    "Restaurar original" elimina el registro de la DB pero no borra el archivo físico.
+                    <strong style={{ color: 'var(--color-verde-oscuro)' }}>Ocultar</strong>{' '}
+                    quita la imagen del sitio sin borrarla — puedes volver a mostrarla en cualquier momento.{' '}
+                    <strong style={{ color: 'var(--color-verde-oscuro)' }}>Restaurar original</strong>{' '}
+                    elimina el registro y vuelve a la imagen base.
                   </div>
                 </>
               )}
@@ -770,17 +875,9 @@ export default function AdminPage() {
       </div>
 
       <style>{`
-        @keyframes spin {
-          to { transform: rotate(360deg); }
-        }
-        /* Hover en slots con imagen */
-        div:hover > .foto-overlay {
-          background: rgba(0,0,0,0.38) !important;
-        }
-        div:hover > .foto-overlay > .foto-overlay-label {
-          opacity: 1 !important;
-          transform: translateY(0) !important;
-        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        div:hover > .foto-overlay { background: rgba(0,0,0,0.38) !important; }
+        div:hover > .foto-overlay > .foto-overlay-label { opacity: 1 !important; transform: translateY(0) !important; }
       `}</style>
     </div>
   )

@@ -14,18 +14,31 @@ export default function AdminLoginPage() {
     setLoading(true)
     setError('')
 
-    const res = await fetch('/api/admin/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ password }),
-    })
+    try {
+      const res = await fetch('/api/admin/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password }),
+      })
 
-    if (res.ok) {
-      router.push('/admin')
-    } else {
-      const data = await res.json()
-      setError(data.error ?? 'Error al iniciar sesión')
+      if (res.ok) {
+        router.push('/admin')
+      } else {
+        let msg = 'Error al iniciar sesión'
+        try {
+          const data = await res.json()
+          msg = data.error ?? msg
+        } catch {
+          if (res.status === 500) {
+            msg = 'Error del servidor (better-sqlite3). Ejecuta "npm rebuild better-sqlite3" y reinicia el servidor.'
+          }
+        }
+        setError(msg)
+      }
+    } catch {
+      setError('No se pudo conectar con el servidor')
     }
+
     setLoading(false)
   }
 
@@ -48,7 +61,6 @@ export default function AdminLoginPage() {
         maxWidth: '400px',
         boxShadow: '0 32px 80px rgba(0,0,0,0.35)',
       }}>
-        {/* Logo */}
         <div style={{ textAlign: 'center', marginBottom: '32px' }}>
           <div style={{
             width: '64px', height: '64px',
@@ -57,22 +69,14 @@ export default function AdminLoginPage() {
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             fontSize: '32px', margin: '0 auto 16px',
             boxShadow: '0 8px 24px rgba(var(--color-verde-claro-rgb), 0.4)',
-          }}>
-            🌿
-          </div>
+          }}>🌿</div>
           <h1 style={{
             fontFamily: 'var(--font-titulo)',
             fontSize: '24px', fontWeight: 800,
             color: 'var(--color-verde-oscuro)',
             margin: '0 0 6px',
-          }}>
-            Panel Admin
-          </h1>
-          <p style={{
-            fontSize: '13px',
-            color: 'rgba(var(--color-verde-oscuro-rgb), 0.5)',
-            margin: 0,
-          }}>
+          }}>Panel Admin</h1>
+          <p style={{ fontSize: '13px', color: 'rgba(var(--color-verde-oscuro-rgb), 0.5)', margin: 0 }}>
             Chachagüí Turismo
           </p>
         </div>
@@ -84,9 +88,7 @@ export default function AdminLoginPage() {
             letterSpacing: '1.5px', textTransform: 'uppercase',
             color: 'var(--color-verde-oscuro)',
             marginBottom: '8px',
-          }}>
-            Contraseña
-          </label>
+          }}>Contraseña</label>
           <input
             type="password"
             value={password}
@@ -107,10 +109,7 @@ export default function AdminLoginPage() {
             }}
           />
           {error && (
-            <p style={{
-              fontSize: '13px', color: '#e53e3e',
-              margin: '0 0 16px',
-            }}>
+            <p style={{ fontSize: '13px', color: '#e53e3e', margin: '0 0 16px', lineHeight: 1.5 }}>
               ⚠️ {error}
             </p>
           )}
@@ -123,9 +122,7 @@ export default function AdminLoginPage() {
               background: loading || !password
                 ? 'rgba(var(--color-verde-oscuro-rgb), 0.3)'
                 : 'var(--color-verde-oscuro)',
-              color: loading || !password
-                ? 'rgba(255,255,255,0.5)'
-                : 'var(--color-verde-claro)',
+              color: loading || !password ? 'rgba(255,255,255,0.5)' : 'var(--color-verde-claro)',
               border: 'none', borderRadius: '12px',
               fontSize: '14px', fontWeight: 700,
               cursor: loading || !password ? 'not-allowed' : 'pointer',
@@ -142,7 +139,7 @@ export default function AdminLoginPage() {
           fontSize: '12px',
           color: 'rgba(var(--color-verde-oscuro-rgb), 0.4)',
         }}>
-          La contraseña se configura en <code style={{ background: '#f0f0f0', padding: '2px 6px', borderRadius: '4px' }}>.env.local</code>
+          Contraseña en <code style={{ background: '#f0f0f0', padding: '2px 6px', borderRadius: '4px' }}>.env.local</code>
         </p>
       </div>
     </main>

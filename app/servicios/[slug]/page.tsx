@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { prestadores } from '@/data/prestadores'
 import GaleriaNaturaleza from '@/components/GaleriaNaturaleza'
+import { resolverGaleria } from '@/lib/imagenesServer'
 
 const categoriaColor: Record<string, string> = {
   Hospedaje:  '#5a3a7a',
@@ -38,16 +39,11 @@ export default async function DetallePrestador({
   if (!item) notFound()
 
   const color = categoriaColor[item.categoria] || 'var(--color-verde-claro)'
+  const relacionados = prestadores.filter((p) => p.slug !== slug).slice(0, 3)
 
-  const galeria = item.imagenes && item.imagenes.length > 0
-    ? item.imagenes
-    : [item.imagen]
-
-  const portada = galeria[0]
-
-  const relacionados = prestadores
-    .filter((p) => p.slug !== slug)
-    .slice(0, 3)
+  // Imágenes con overrides del admin
+  const galeria = await resolverGaleria('prestadores', item.id)
+  const portada = galeria[0] || item.imagen
 
   return (
     <main style={{ paddingTop: '64px', background: 'var(--color-fondo)', minHeight: '100vh' }}>
@@ -67,8 +63,7 @@ export default async function DetallePrestador({
         }} />
         <div style={{
           position: 'absolute', inset: 0,
-          background:
-            'linear-gradient(to right, rgba(var(--color-verde-oscuro-rgb), 0.95) 0%, rgba(var(--color-verde-oscuro-rgb), 0.75) 60%, rgba(var(--color-verde-oscuro-rgb), 0.50) 100%)',
+          background: 'linear-gradient(to right, rgba(var(--color-verde-oscuro-rgb), 0.95) 0%, rgba(var(--color-verde-oscuro-rgb), 0.75) 60%, rgba(var(--color-verde-oscuro-rgb), 0.50) 100%)',
         }} />
 
         <div style={{ position: 'relative', maxWidth: '900px', margin: '0 auto', padding: '0 40px' }}>
@@ -114,14 +109,12 @@ export default async function DetallePrestador({
           }}>
             {item.descripcion}
           </p>
-
         </div>
       </div>
 
       {/* Contenido */}
       <div style={{ maxWidth: '1080px', margin: '0 auto', padding: '64px 40px' }}>
 
-        {/* Galería */}
         <GaleriaNaturaleza
           imagenes={galeria}
           nombre={item.nombre}
@@ -136,7 +129,7 @@ export default async function DetallePrestador({
           gap: '16px', marginBottom: '48px',
         }}>
           {[
-            { label: 'Tipo',       valor: item.tipo },
+            { label: 'Tipo',      valor: item.tipo },
             { label: 'Categoría', valor: item.categoria },
             { label: 'Ubicación', valor: item.ubicacion },
           ].map((info) => (
@@ -252,7 +245,6 @@ export default async function DetallePrestador({
                   borderBottom: '1.5px solid var(--color-borde)',
                   borderLeft: `4px solid ${categoriaColor[rel.categoria] || color}`,
                   boxShadow: '0 2px 10px rgba(var(--color-verde-oscuro-rgb), 0.05)',
-                  transition: 'transform 0.2s, box-shadow 0.2s',
                 }}>
                   <div style={{
                     width: '100%', aspectRatio: '4/3',
@@ -266,7 +258,11 @@ export default async function DetallePrestador({
                     />
                   </div>
                   <div style={{ padding: '14px 16px' }}>
-                    <div style={{ fontSize: '11px', fontWeight: 700, color: categoriaColor[rel.categoria] || color, marginBottom: '4px', letterSpacing: '0.5px' }}>
+                    <div style={{
+                      fontSize: '11px', fontWeight: 700,
+                      color: categoriaColor[rel.categoria] || color,
+                      marginBottom: '4px', letterSpacing: '0.5px',
+                    }}>
                       {rel.categoria}
                     </div>
                     <div style={{ fontSize: '13px', fontWeight: 700, color: 'var(--color-verde-oscuro)', lineHeight: 1.3 }}>

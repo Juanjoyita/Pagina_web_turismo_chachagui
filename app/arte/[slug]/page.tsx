@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { todosArte } from '@/data/historia'
 import GaleriaNaturaleza from '@/components/GaleriaNaturaleza'
+import { resolverGaleria } from '@/lib/imagenesServer'
 
 export async function generateStaticParams() {
   return todosArte.map((item) => ({ slug: item.id }))
@@ -30,9 +31,11 @@ export default async function DetalleArte({
   const item = todosArte.find((i) => i.id === slug)
   if (!item) notFound()
 
-  // Sección a la que se debe volver
-  const subRuta = item.subcategoria.toLowerCase() // historia | cultura | artesanías
-    .normalize('NFD').replace(/[\u0300-\u036f]/g, '') // quita acentos
+  const subRuta = item.subcategoria.toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+
+  // Imágenes con overrides del admin
+  const galeria = await resolverGaleria('arte-cultura', item.id)
 
   return (
     <main style={{ paddingTop: '64px', background: 'var(--color-fondo)', minHeight: '100vh' }}>
@@ -40,8 +43,7 @@ export default async function DetalleArte({
       {/* Hero */}
       <div style={{
         background: 'var(--color-verde-oscuro)',
-        backgroundImage:
-          'radial-gradient(circle, rgba(var(--color-verde-claro-rgb), 0.12) 1.5px, transparent 1.5px)',
+        backgroundImage: 'radial-gradient(circle, rgba(var(--color-verde-claro-rgb), 0.12) 1.5px, transparent 1.5px)',
         backgroundSize: '28px 28px',
         padding: '72px 0 80px',
       }}>
@@ -63,7 +65,7 @@ export default async function DetalleArte({
             letterSpacing: '3px', textTransform: 'uppercase',
             padding: '5px 14px', borderRadius: '30px', marginBottom: '20px',
           }}>
-            {item.emoji} {item.subcategoria} {item.badge ? ` · ${item.badge}` : ''}
+            {item.emoji} {item.subcategoria}{item.badge ? ` · ${item.badge}` : ''}
           </div>
 
           <h1 style={{
@@ -81,17 +83,16 @@ export default async function DetalleArte({
           }}>
             {item.descripcion}
           </p>
-
         </div>
       </div>
 
       {/* Contenido */}
       <div style={{ maxWidth: '900px', margin: '0 auto', padding: '64px 40px' }}>
 
-        {/* Galería de imágenes */}
-        {('imagenes' in item && Array.isArray(item.imagenes) && item.imagenes.length > 0) ? (
+        {/* Galería con overrides */}
+        {galeria.length > 0 ? (
           <GaleriaNaturaleza
-            imagenes={item.imagenes}
+            imagenes={galeria}
             nombre={item.nombre}
             categoria="Arte y Cultura"
             tipo={item.subcategoria}
@@ -103,7 +104,6 @@ export default async function DetalleArte({
             borderRadius: '20px', marginBottom: '48px',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             boxShadow: '0 16px 48px rgba(var(--color-verde-oscuro-rgb), 0.15)',
-            position: 'relative', overflow: 'hidden',
           }}>
             <div style={{ fontSize: '80px' }}>{item.emoji}</div>
           </div>
@@ -172,7 +172,7 @@ export default async function DetalleArte({
           </div>
         </div>
 
-        {/* Otros items de la misma subcategoría */}
+        {/* Relacionados */}
         {(() => {
           const relacionados = todosArte
             .filter((i) => i.subcategoria === item.subcategoria && i.id !== item.id)
