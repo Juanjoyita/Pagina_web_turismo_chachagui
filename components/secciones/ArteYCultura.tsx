@@ -103,33 +103,29 @@ export default function ArteYCultura() {
                 position: 'relative', zIndex: 1,
                 width: '100%', height: '100%',
                 minHeight: '480px',
-                background: 'linear-gradient(160deg, var(--color-verde-claro) 0%, #3A6449 40%, var(--color-verde-oscuro) 100%)',
                 borderRadius: '22px',
-                display: 'flex', alignItems: 'center',
-                justifyContent: 'center',
-                boxShadow: '0 24px 64px rgba(var(--color-verde-oscuro-rgb), 0.35)',
                 overflow: 'hidden',
+                boxShadow: '0 24px 64px rgba(var(--color-verde-oscuro-rgb), 0.35)',
               }}>
-                {/* Círculos decorativos */}
+                {/* Foto casona */}
+                <img
+                  src="/imagenes/historia/HIS004.png"
+                  alt="Casonas tradicionales de Chachagüí"
+                  style={{
+                    width: '100%',
+                    height: '100%',
+                    objectFit: 'cover',
+                    objectPosition: 'center',
+                    position: 'absolute',
+                    top: 0, left: 0,
+                    display: 'block',
+                  }}
+                />
+                {/* Overlay sutil para que el badge contraste */}
                 <div style={{
-                  position: 'absolute', top: '-60px', right: '-60px',
-                  width: '240px', height: '240px', borderRadius: '50%',
-                  background: 'rgba(var(--color-verde-claro-rgb), 0.1)',
+                  position: 'absolute', inset: 0,
+                  background: 'linear-gradient(to top, rgba(0,0,0,0.18) 0%, transparent 60%)',
                 }} />
-                <div style={{
-                  position: 'absolute', bottom: '-40px', left: '-40px',
-                  width: '180px', height: '180px', borderRadius: '50%',
-                  background: 'rgba(var(--color-crema-rgb), 0.06)',
-                }} />
-                <div style={{ position: 'relative', textAlign: 'center', zIndex: 2 }}>
-                  <div style={{ fontSize: '80px', marginBottom: '16px' }}>🎨</div>
-                  <p style={{
-                    color: 'rgba(255,255,255,0.5)', fontSize: '12px',
-                    letterSpacing: '3px', textTransform: 'uppercase', fontWeight: 600,
-                  }}>
-                    Foto próximamente
-                  </p>
-                </div>
               </div>
 
               {/* Badge 300+ */}

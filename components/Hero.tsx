@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
-import { heroVideo, heroImagen } from '@/lib/imagenes'
+import { heroVideo } from '@/lib/imagenes'
 
 type Slide = {
   id: string
@@ -26,10 +26,10 @@ const slides: Slide[] = [
   {
     id: 'aventura-imagen',
     tipo: 'imagen',
-    src: heroImagen(1),
+    src: '/imagenes/aventura/parapente/aven001.png',
     categoria: 'Deporte y Aventura',
-    titulo: 'Senderismo y Montañismo',
-    descripcion: 'Rutas para todos los niveles',
+    titulo: 'Parapente en Chachagüí',
+    descripcion: 'Vuela sobre los valles y montañas de Nariño',
   },
   {
     id: 'bosque-video',
@@ -43,25 +43,25 @@ const slides: Slide[] = [
   {
     id: 'gastronomia-imagen',
     tipo: 'imagen',
-    src: heroImagen(2),
+    src: '/imagenes/gastronomia/GAS004.png',
     categoria: 'Gastronomía Local',
     titulo: 'Sabores Nariñenses',
     descripcion: 'Empanadas de añejo, cuy y mucho más',
   },
   {
-    id: 'rutas-imagen',
+    id: 'naturaleza-imagen',
     tipo: 'imagen',
-    src: heroImagen(3),
-    categoria: 'Rutas Turísticas',
-    titulo: 'Recorridos Recomendados',
-    descripcion: 'Itinerarios de 1 y 2 días',
+    src: '/imagenes/naturaleza/NAT006-portada.png',
+    categoria: 'Naturaleza y Paisajes',
+    titulo: 'Cerro El Cundur',
+    descripcion: 'Un mirador natural con vista al valle de Nariño',
   },
   {
     id: 'cultura-imagen',
     tipo: 'imagen',
-    src: heroImagen(4),
+    src: '/imagenes/festividades/cometas/FES001.png',
     categoria: 'Cultura y Tradición',
-    titulo: 'Ferias y Celebraciones',
+    titulo: 'Festival de Cometas',
     descripcion: 'Cultura viva en cada época del año',
   },
 ]
